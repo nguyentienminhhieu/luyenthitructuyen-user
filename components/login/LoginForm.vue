@@ -112,6 +112,8 @@
         </p>
       </div>
     </div>
+    <ToastSuccess v-if="showSuccessToast" :message="successMessage" />
+    <ToastError v-if="showErrorToast" :message="errorMessage" />
   </div>
 </template>
 <script>
@@ -119,12 +121,16 @@ import { validationMixin } from 'vuelidate'
 import { required, maxLength, minLength, email } from 'vuelidate/lib/validators'
 import { mapActions } from 'vuex'
 import { checkStatusClass } from '~/mixins/ruleValidator'
-
+import ToastSuccess from '~/components/common/ToastSuccess.vue'
+import ToastError from '~/components/common/ToastError.vue'
 export default {
   name: 'LoginForm',
   mixins: [validationMixin],
   layout: 'authLayout',
-
+  components: {
+    ToastSuccess,
+    ToastError,
+  },
   data() {
     return {
       ruleForm: {
@@ -132,6 +138,10 @@ export default {
         password: '',
       },
       isPasswordVisible: false,
+      showSuccessToast: false,
+      showErrorToast: false,
+      successMessage: 'Đăng nhập thành công!.',
+      errorMessage: 'Lỗi! Sai email hoặc mật khẩu.',
     }
   },
   validations: {
@@ -175,9 +185,12 @@ export default {
           }
           const response = await this.login(payload)
           if (response) {
-            this.$router.push('/admin')
+            this.$router.push('/')
           } else {
-            alert('sai mat khau hoặc số điện thoại')
+            this.showErrorToast = true
+            setTimeout(() => {
+              this.showErrorToast = false
+            }, 3000)
           }
         } catch (error) {
           console.log('Submit Failed', error)

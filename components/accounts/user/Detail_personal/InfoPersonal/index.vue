@@ -10,18 +10,18 @@
       </div>
     </div>
 
-    <div>
-      <div class="flex flex-row justify-between mt-2">
+    <div class="info">
+      <div class="info-1 flex flex-row justify-between mt-2">
         <label>Username: <span>username</span></label>
         <label>SDT: <span>099999</span></label>
         <label>Email: <span>email</span></label>
       </div>
-      <div class="flex flex-row justify-between mt-8">
+      <div class="info-1 flex flex-row justify-between mt-8">
         <label>Roles: <span>roles</span></label>
         <label>Class: <span>class</span></label>
         <label>Email: <span>email</span></label>
       </div>
-      <div class="flex flex-row justify-between mt-8">
+      <div class="info-1 flex flex-row justify-between mt-8">
         <label>Trường: <span>Trường</span></label>
         <label>Địa chỉ: <span>Địa chỉ</span></label>
         <label>Email: <span>email</span></label>
@@ -42,4 +42,13 @@ export default {
   },
 }
 </script>
-<style></style>
+<style scoped>
+@media (min-width: 375px) and (max-width: 899px) {
+  .info {
+    flex-direction: column;
+  }
+  .info-1 {
+    flex-direction: column;
+  }
+}
+</style>

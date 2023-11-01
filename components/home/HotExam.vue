@@ -1,6 +1,6 @@
 <template>
   <div class="my-10 -z-10">
-    <h1 class="text-[#0e514b] mb-6 text-2xl font-medium">ĐỀ THI HOT</h1>
+    <h1 class="text-[#273c75] mb-6 text-2xl font-medium">ĐỀ THI HOT</h1>
 
     <div
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
@@ -34,7 +34,7 @@ export default {
       exams: [
         {
           title: 'De thi 1',
-          imageUrl: require('~/assets/img/hotExam/210.jpg'),
+          imageUrl: require('~/assets/img/hotExam/E3JeIlBkVSbcEMM4Z7HKsrsHZyuGy0Q5uL5f8bxQ.jpg'),
           publishedAt: '5 giờ trước',
         },
         {
@@ -44,32 +44,32 @@ export default {
         },
         {
           title: 'De thi 2',
-          imageUrl: require('~/assets/img/hotExam/giai-phap-cho-sinh-vien-khoa-hoc-moi-truong-2.jpg'),
+          imageUrl: require('~/assets/img/hotExam/9XxllN2ByFkKVOZkCrGf8gGqZoDt2FSbHg3bhbM7.jpg'),
           publishedAt: '1 ngày trước',
         },
         {
           title: 'De thi 2',
-          imageUrl: require('~/assets/img/hotExam/210.jpg'),
+          imageUrl: require('~/assets/img/hotExam/E3JeIlBkVSbcEMM4Z7HKsrsHZyuGy0Q5uL5f8bxQ.jpg'),
           publishedAt: '1 ngày trước',
         },
         {
           title: 'De thi 2',
-          imageUrl: require('~/assets/img/hotExam/ky-nang-can-co-cua-pdp_c14dc8b8-569c-45cf-b38a-bb3092f8b44e.jpg'),
+          imageUrl: require('~/assets/img/hotExam/9XxllN2ByFkKVOZkCrGf8gGqZoDt2FSbHg3bhbM7.jpg'),
           publishedAt: '1 ngày trước',
         },
         {
           title: 'De thi 2',
-          imageUrl: require('~/assets/img/hotExam/bai-tap-cau-truc-make-use-of.jpg'),
-          publishedAt: '1 ngày trước',
-        },
-        {
-          title: 'De thi 2',
-          imageUrl: require('~/assets/img/hotExam/ky-nang-can-co-cua-pdp_c14dc8b8-569c-45cf-b38a-bb3092f8b44e.jpg'),
+          imageUrl: require('~/assets/img/hotExam/hoa-hoc-la-mon-hoc-hay.jpg'),
           publishedAt: '1 ngày trước',
         },
         {
           title: 'De thi 2',
           imageUrl: require('~/assets/img/hotExam/bai-tap-cau-truc-make-use-of.jpg'),
+          publishedAt: '1 ngày trước',
+        },
+        {
+          title: 'De thi 2',
+          imageUrl: require('~/assets/img/hotExam/hoa-hoc-la-mon-hoc-hay.jpg'),
           publishedAt: '1 ngày trước',
         },
 
@@ -80,6 +80,7 @@ export default {
   methods: {
     goToDetail() {
       this.$router.push('/exam/intructions')
+      // this.$router.push(`/exam/${this.$route.params.slug}`)
     },
   },
 }

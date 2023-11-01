@@ -1,6 +1,6 @@
 <template>
   <div class="my-12">
-    <h1 class="text-[#0e514b] mb-6 text-2xl font-medium">
+    <h1 class="text-[#273c75] mb-6 text-2xl font-medium">
       CÁC THỂ LOẠI HÀNG ĐẦU
     </h1>
 
@@ -18,8 +18,16 @@
       </div>
     </div>
     <div class="image-final my-6 flex flex-row justify-between">
-      <img src="~/assets/img/img-blog1.4e335516.png" alt="" />
-      <img src="~/assets/img/img-blog2.2905c584.png" alt="" />
+      <img
+        class="max-w-[50%] h-auto m-2 rounded-md"
+        src="~/assets/img/hotExam/ky-nang-can-co-cua-pdp_c14dc8b8-569c-45cf-b38a-bb3092f8b44e.jpg"
+        alt=""
+      />
+      <img
+        class="max-w-[50%] h-auto m-2 rounded-md"
+        src="~/assets/img/hotExam/34_thit7.png"
+        alt=""
+      />
     </div>
   </div>
 </template>

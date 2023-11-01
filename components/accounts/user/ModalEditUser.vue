@@ -5,7 +5,7 @@
   >
     <div class="fixed inset-0 bg-black opacity-60" @click="closeModal"></div>
     <div
-      class="bg-white p-6 rounded-lg shadow-lg z-50 max-w-screen-md max-h-screen-md"
+      class="container-all bg-white p-6 rounded-lg shadow-lg z-50 max-w-screen-md max-h-screen-md"
     >
       <h2 class="text-center text-xl font-semibold mb-10">
         Sửa thông tin User
@@ -13,7 +13,7 @@
 
       <!-- Form để thêm giáo viên -->
       <form
-        class="grid grid-cols-1 md:grid-cols-3 gap-4"
+        class="container-form grid grid-cols-1 md:grid-cols-3 gap-4"
         @submit.prevent="editUser"
       >
         <!-- Username -->
@@ -229,7 +229,7 @@
           </button>
           <button
             type="submit"
-            class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            class="px-4 py-2 bg-[#273c75] hover:bg-[#31447b] text-white rounded-md"
           >
             Change
           </button>
@@ -307,3 +307,17 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+@media (min-width: 375px) and (max-width: 899px) {
+  .container-all {
+    width: 400px;
+    height: 500px;
+    overflow-y: auto;
+  }
+  .container-form {
+    display: flex;
+    flex-direction: column;
+  }
+}
+</style>

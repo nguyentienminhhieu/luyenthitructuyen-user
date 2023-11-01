@@ -1,5 +1,5 @@
 <template>
-  <div class="p-10 h-screen">
+  <div class="p-10">
     <div class="">
       <AvatarStudent @upload-avatar-clicked="showUploadAvatarModal = true" />
       <InfoPersonStudent @edit-clicked="showEditModal = true" />

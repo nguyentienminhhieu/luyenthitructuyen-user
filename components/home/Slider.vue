@@ -29,9 +29,9 @@ export default {
   data() {
     return {
       images: [
-        require('~/assets/img/slider/banner.svg'),
         require('~/assets/img/slider/639bdaa889e66.jpg'),
-        require('~/assets/img/slider/1636341707590_UwAmh.png'),
+        require('~/assets/img/slider/pasted image 0.png'),
+        require('~/assets/img/slider/EmRSc7DmFfrWqWW8jneiHM44UndrYqaiNZq7EONp.jpg'),
         require('~/assets/img/slider/ngon-ngu-lap-trinh-1-1536x864.jpg'),
       ],
       currentSlide: 0,
@@ -58,6 +58,9 @@ export default {
   },
   mounted() {
     this.autoSlide()
+  },
+  beforeDestroy() {
+    clearInterval(this.slideInterval)
   },
 }
 </script>

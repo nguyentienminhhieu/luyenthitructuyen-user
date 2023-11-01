@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <header
-      class="bg-[#0E514B] py-4 px-14 h-16 flex justify-between items-center"
+      class="bg-[#273c75] py-4 px-14 h-16 flex justify-between items-center"
     >
       <div class="flex items-center space-x-4">
         <h1 to="/admin" class="logo-color text-2xl font-bold">LOGO</h1>

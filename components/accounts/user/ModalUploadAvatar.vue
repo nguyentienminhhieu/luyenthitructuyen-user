@@ -3,42 +3,44 @@
     v-if="showModal"
     class="fixed inset-0 flex items-center justify-center z-50"
   >
-    <!-- Lớp nền mờ -->
     <div class="fixed inset-0 bg-black opacity-60" @click="closeModal"></div>
-
-    <!-- Modal chứa nội dung -->
     <div
-      class="bg-white p-6 rounded-lg shadow-lg z-50 max-w-screen-md max-h-screen-md"
+      class="w-[600px] max-h-screen-md bg-white p-6 rounded-lg shadow-lg z-50"
     >
-      <!-- Tiêu đề modal -->
       <h2 class="text-xl font-semibold mb-4">Thay đổi ảnh đại diện</h2>
-
-      <!-- Nội dung modal -->
       <div class="space-y-4">
-        <!-- Thành phần tải ảnh đại diện -->
-        <input type="file" accept="image/*" @change="handleFileChange" />
-        <img
-          v-if="selectedImage"
-          :src="selectedImage"
-          alt="Ảnh đại diện"
-          class="w-32 h-32 rounded-full"
-        />
+        <label
+          for="avatar"
+          class="bg-[#273c75] hover:bg-[#31447b] text-white px-4 py-2 rounded-full font-medium cursor-pointer"
+        >
+          Tải ảnh đại diện
+          <input
+            type="file"
+            id="avatar"
+            accept="image/*"
+            @change="handleFileChange"
+            class="hidden"
+          />
+        </label>
+        <div class="my-4">
+          <button v-if="selectedImage" @click="clearImage">
+            <i class="fa-solid fa-x"></i>
+          </button>
+          <img
+            v-if="selectedImage"
+            :src="selectedImage"
+            alt="Ảnh đại diện"
+            class="w-32 h-32 rounded-full mx-auto"
+          />
+        </div>
       </div>
-      <!-- Nút "Thoát" -->
       <div class="text-right mt-4">
         <button
-          class="text-gray-600 hover:text-gray-800 font-medium"
+          type="button"
+          class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 mr-2"
           @click="closeModal"
         >
           Thoát
-        </button>
-
-        <!-- Nút "Thay đổi" -->
-        <button
-          class="ml-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full font-medium"
-          @click="changeAvatar"
-        >
-          Thay đổi
         </button>
       </div>
     </div>
@@ -73,10 +75,19 @@ export default {
         reader.readAsDataURL(file)
       }
     },
+    clearImage() {
+      this.selectedImage = null
+    },
   },
 }
 </script>
 
 <style scoped>
-/* Thêm CSS tùy chỉnh cho modal nếu cần */
+@media (min-width: 375px) and (max-width: 899px) {
+  .container-all {
+    width: 400px;
+    /* height: 200px; */
+    /* overflow-y: auto; */
+  }
+}
 </style>

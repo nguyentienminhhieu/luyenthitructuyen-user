@@ -4,7 +4,7 @@
       <h1 class="text-color-auth text-4xl font-semibold mb-4">Register</h1>
       <form class="login-form mt-8 space-y-6" @submit.prevent="submitForm">
         <!-- Hàng 1: Username và Số điện thoại -->
-        <div class="grid grid-cols-3 gap-4">
+        <div class="grid grid-cols-2 gap-3">
           <div>
             <label for="username" class="block text-color-default"
               >Username</label
@@ -33,14 +33,14 @@
                 {{
                   !$v.ruleForm.username.required
                     ? 'Vui lòng nhập dữ liệu!'
-                    : !$v.ruleForm.username.mustNotSymbol
+                    : !$v.ruleForm.username.mustOnlyNumberAndSymbol
                     ? 'Vui lòng nhập đúng định dạng tên!'
                     : ''
                 }}
               </span>
             </div>
           </div>
-          <div>
+          <!-- <div>
             <label for="phone" class="block text-color-default"
               >Số điện thoại</label
             >
@@ -73,17 +73,6 @@
                 }}
               </span>
             </div>
-          </div>
-
-          <!-- <div>
-            <label for="birthdate" class="block text-color-default"
-              >Ngày Sinh</label
-            >
-            <datepicker
-              id="birthdate"
-              v-model="birthdate"
-              :format="datePickerFormat"
-            ></datepicker>
           </div> -->
 
           <div>
@@ -123,7 +112,7 @@
         </div>
 
         <!-- Hàng 2: Email, Password và Confirm Password -->
-        <div class="grid grid-cols-3 gap-4">
+        <div class="grid grid-cols-2 gap-3">
           <div>
             <label for="email" class="block text-color-default">Email</label>
             <input
@@ -201,7 +190,7 @@
               </span>
             </div>
           </div>
-          <div class="relative">
+          <!-- <div class="relative">
             <label for="confirmPassword" class="block text-color-default"
               >Confirm Password</label
             >
@@ -243,11 +232,11 @@
                 }}
               </span>
             </div>
-          </div>
+          </div> -->
         </div>
 
         <!-- Hàng 3: roles, Trường, Địa Chỉ -->
-        <div class="grid grid-cols-3 gap-4">
+        <div class="grid grid-cols-2 gap-3">
           <div>
             <label for="roles" class="block text-color-default">Roles</label>
             <!-- <input
@@ -276,10 +265,9 @@
               class="w-full border-b-2 focus:outline-none p-1"
               required
             >
-              <option value="6">Lớp 6</option>
-              <option value="7">Lớp 7</option>
-              <option value="8">Lớp 8</option>
-              <option value="9">Lớp 9</option>
+              <option v-for="item in listGrade" :key="item.id">
+                {{ item.name }}
+              </option>
             </select>
           </div>
           <div>
@@ -337,9 +325,14 @@
         </p>
       </div>
     </div>
+    <ToastSuccess v-if="showSuccessToast" :message="successMessage" />
+    <ToastError v-if="showErrorToast" :message="errorMessage" />
   </div>
 </template>
 <script>
+import { mapActions, mapState } from 'vuex'
+import ToastSuccess from '~/components/common/ToastSuccess.vue'
+import ToastError from '~/components/common/ToastError.vue'
 import { validationMixin } from 'vuelidate'
 import {
   required,
@@ -348,17 +341,17 @@ import {
   email,
   sameAs,
 } from 'vuelidate/lib/validators'
-// import Datepicker from 'vue2-datepicker'
 import {
   checkStatusClass,
   mustNotSymbol,
-  mustPhomeNumber,
+  mustOnlyNumberAndSymbol,
 } from '~/mixins/ruleValidator'
 export default {
   name: 'RegisterForm',
   mixins: [validationMixin],
-  component: {
-    // Datepicker,
+  components: {
+    ToastSuccess,
+    ToastError,
   },
   layout: 'authLayout',
   //   auth: 'guest',
@@ -366,30 +359,32 @@ export default {
     return {
       ruleForm: {
         username: '',
-        phone: '',
-        // birthdate: null,
+        // phone: '',
         email: '',
         password: '',
-        confirmpassword: '',
+        // confirmpassword: '',
         roles: null,
         school: '',
         address: '',
         class: null,
       },
-      // datePickerFormat: 'yyyy-MM-dd', // Định dạng ngày: YYYY-MM-DD
       isPasswordVisible: false,
+      showSuccessToast: false,
+      showErrorToast: false,
+      successMessage: 'Đăng ký thành công!.',
+      errorMessage: 'Lỗi! Sai cái gì đó.',
     }
   },
   validations: {
     ruleForm: {
       username: {
         required,
-        mustNotSymbol,
+        mustOnlyNumberAndSymbol,
       },
-      phone: {
-        required,
-        mustPhomeNumber,
-      },
+      // phone: {
+      //   required,
+      //   mustPhomeNumber,
+      // },
       email: {
         required,
         email,
@@ -399,10 +394,10 @@ export default {
         maxLength: maxLength(20),
         minLength: minLength(6),
       },
-      confirmpassword: {
-        required,
-        sameAsPassword: sameAs('password'),
-      },
+      // confirmpassword: {
+      //   required,
+      //   sameAsPassword: sameAs('password'),
+      // },
       school: {
         required,
         mustNotSymbol,
@@ -413,7 +408,15 @@ export default {
       },
     },
   },
+  computed: {
+    ...mapState('grade', ['listGrade']),
+  },
+  mounted() {
+    this.getGrade()
+  },
   methods: {
+    ...mapActions('authen', ['register']),
+    ...mapActions('grade', ['getGrade']),
     checkStatusClass,
     togglePassword() {
       this.isPasswordVisible = !this.isPasswordVisible
@@ -426,13 +429,38 @@ export default {
         confirmPasswordInput.type = this.isPasswordVisible ? 'text' : 'password'
       }
     },
-    submitForm() {
+    async submitForm() {
       const invalid = this.$v.ruleForm.$invalid
       if (invalid) {
         this.$v.ruleForm.$touch()
       } else {
-        console.log('Dung')
+        try {
+          const payload = {
+            name: this.ruleForm.username,
+            email: this.ruleForm.email,
+            password: this.ruleForm.password,
+            role: this.ruleForm.roles,
+            adress: this.ruleForm.address,
+            school: this.ruleForm.school,
+            grade_id: this.ruleForm.class,
+          }
+          this.reset()
+          await this.register(payload)
+          this.showSuccessToast = true
+          setTimeout(() => {
+            this.showSuccessToast = false
+          }, 3000)
+        } catch (error) {
+          this.showErrorToast = true
+          setTimeout(() => {
+            this.showErrorToast = false
+          }, 3000)
+          console.log('Submit Failed', error)
+        }
       }
+    },
+    reset() {
+      this.ruleForm = ''
     },
   },
 }

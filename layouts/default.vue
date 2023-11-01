@@ -1,20 +1,45 @@
 <template>
   <div class="">
     <header
-      class="bg-[#0E514B] py-4 px-14 h-16 flex justify-between items-center sticky top-0"
+      class="bg-[#273c75] py-4 px-14 h-16 flex justify-between items-center sticky top-0"
     >
       <div class="flex items-center space-x-4">
         <nuxt-link to="/" class="logo-color text-2xl font-bold">LOGO</nuxt-link>
       </div>
-      <div class="relative">
-        <!-- Dropdown -->
-        <h1 @click="categoryOpen" class="text-border-default cursor-pointer">
-          Chuyên mục
-        </h1>
-        <CategoryMenu v-if="showDropdown" />
+      <div class="flex">
+        <div class="menu-class relative m-4">
+          <!-- Dropdown -->
+          <!-- <ul class="flex cursor-pointer">
+            <li
+              v-for="item in listGrade"
+              class="text-border-default cursor-pointer mx-4"
+              :key="item.id"
+              @click="goToCategory(item.name)"
+            >
+              {{ item.name }}
+            </li>
+          </ul> -->
+          <h1
+            @click="categoryOpenClass"
+            class="text-border-default cursor-pointer"
+          >
+            Đề thi
+          </h1>
+          <CategoryClassMenu v-if="showDropdownClass" />
+        </div>
+        <div class="menu-class relative m-4">
+          <!-- Dropdown -->
+          <h1
+            @click="categoryOpenSubject"
+            class="text-border-default cursor-pointer"
+          >
+            Bài tập
+          </h1>
+          <CategorySubjectMenu v-if="showDropdownSubject" />
+        </div>
       </div>
 
-      <div class="relative">
+      <div class="relative" @click="closeModal">
         <input
           type="text"
           placeholder="Search..."
@@ -27,11 +52,11 @@
         </button>
       </div>
       <div class="flex items-center space-x-4">
-        <button
+        <!-- <button
           class="text-border-default text-border-default hover:text-color-custom"
         >
           <i class="fas fa-bell"></i>
-        </button>
+        </button> -->
         <div class="text-border-default">
           <div
             class="relative cursor-pointer text-border-default hover:text-border-default"
@@ -45,9 +70,8 @@
         </div>
       </div>
     </header>
-    <!-- Các nội dung khác của trang web nằm ở đây -->
     <nuxt />
-    <footer class="text-color-default mt-16 bg-[#f1f2f6]">
+    <footer class="text-color-default bg-[#f1f2f6]">
       <div class="container mx-auto text-center">
         <div>
           <p>
@@ -61,27 +85,52 @@
   </div>
 </template>
 <script>
+import { mapState, mapActions } from 'vuex'
 import AccountMenu from '~/components/common/AccountMenu'
-import CategoryMenu from '~/components/common/CategoryMenu'
+import CategoryClassMenu from '~/components/common/CategoryMenu/CategoryClassMenu'
+import CategorySubjectMenu from '~/components/common/CategoryMenu/CategorySubjectMenu'
+import HeadingCategory from '~/components/category/Heading.vue'
+
 export default {
   name: 'default',
   components: {
     AccountMenu,
-    CategoryMenu,
+    CategoryClassMenu,
+    CategorySubjectMenu,
+    HeadingCategory,
   },
   data() {
     return {
       isMenuAccount: false,
-      showDropdown: false,
+      showDropdownClass: false,
+      showDropdownSubject: false,
     }
   },
+  computed: {
+    ...mapState('grade', ['listGrade']),
+  },
+  mounted() {
+    this.getGrade()
+  },
   methods: {
+    ...mapActions('grade', ['getGrade']),
     toggleAccountMenu() {
       this.isMenuAccount = !this.isMenuAccount
     },
-    categoryOpen() {
-      this.showDropdown = !this.showDropdown
+    categoryOpenClass() {
+      this.showDropdownClass = !this.showDropdownClass
     },
+    categoryOpenSubject() {
+      this.showDropdownSubject = !this.showDropdownSubject
+    },
+    closeModal() {
+      this.showDropdownClass = false
+      this.showDropdownSubject = false
+    },
+    // goToCategory(nameGrade) {
+    //   this.$router.push('/classes')
+    //   this.$root.$emit('name-grade', nameGrade)
+    // },
   },
 }
 </script>
@@ -116,5 +165,18 @@ header {
   .search-input {
     width: 200px;
   }
+  /* .menu-class {
+    font-size: 14px;
+    margin: 5px;
+  }
+  .menu-class h1 {
+    display: block;
+  }
+  .menu-class ul {
+    display: none;
+  }
+  .menu-class ul li {
+    margin: 0 8px;
+  } */
 }
 </style>
