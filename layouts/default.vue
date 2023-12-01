@@ -4,9 +4,14 @@
       class="bg-[#273c75] py-4 px-14 h-16 flex justify-between items-center sticky top-0"
     >
       <div class="flex items-center space-x-4">
-        <nuxt-link to="/" class="logo-color text-2xl font-bold">LOGO</nuxt-link>
+        <nuxt-link
+          to="/"
+          @click="reloadHomePage"
+          class="logo-color text-2xl font-bold"
+          >LOGO</nuxt-link
+        >
       </div>
-      <div class="flex">
+      <div class="menu flex">
         <div class="menu-class relative m-4">
           <!-- Dropdown -->
           <!-- <ul class="flex cursor-pointer">
@@ -23,9 +28,11 @@
             @click="categoryOpenClass"
             class="text-border-default cursor-pointer"
           >
-            Đề thi
+            <i class="fa-solid fa-book mx-1"></i>
+
+            ĐỀ THI
           </h1>
-          <CategoryClassMenu v-if="showDropdownClass" />
+          <CategoryExamMenu v-if="showDropdownClass" />
         </div>
         <div class="menu-class relative m-4">
           <!-- Dropdown -->
@@ -33,9 +40,10 @@
             @click="categoryOpenSubject"
             class="text-border-default cursor-pointer"
           >
-            Bài tập
+            <i class="fa-solid fa-pen-clip mx-1"></i>
+            BÀI TẬP
           </h1>
-          <CategorySubjectMenu v-if="showDropdownSubject" />
+          <CategoryExerciseMenu v-if="showDropdownSubject" />
         </div>
       </div>
 
@@ -51,12 +59,24 @@
           <i class="fas fa-search"></i>
         </button>
       </div>
+      <div
+        @click="openModalAddExam"
+        v-if="user.role === 2"
+        class="menu relative m-4"
+      >
+        <h1 class="text-border-default cursor-pointer">
+          <i class="fa-regular fa-calendar-plus mx-1"></i>
+          TẠO ĐỀ
+        </h1>
+        <!-- <CreateExamExe v-if="showDropdownCreate" /> -->
+      </div>
       <div class="flex items-center space-x-4">
         <!-- <button
           class="text-border-default text-border-default hover:text-color-custom"
         >
           <i class="fas fa-bell"></i>
         </button> -->
+
         <div class="text-border-default">
           <div
             class="relative cursor-pointer text-border-default hover:text-border-default"
@@ -64,13 +84,31 @@
           >
             <i class="fas fa-user-circle"></i>
           </div>
-          <div>
+          <div @click="closeModal">
             <AccountMenu v-if="isMenuAccount" />
           </div>
         </div>
+        <div class="menu-responsive hidden text-border-default">
+          <div class="w-3" @click="toggleMenu">
+            <i :class="showMenu ? 'fa-solid fa-times' : 'fa-solid fa-bars'"></i>
+          </div>
+
+          <MenuBars
+            @add-click="addClick"
+            key="menu-bars"
+            class="transform transition-transform ease-out -z-10"
+            :class="{
+              'translate-x-0': showMenu,
+              'translate-x-full': !showMenu,
+            }"
+            v-show="showMenu"
+          />
+        </div>
       </div>
     </header>
-    <nuxt />
+    <div @click="closeModal">
+      <nuxt />
+    </div>
     <footer class="text-color-default bg-[#f1f2f6]">
       <div class="container mx-auto text-center">
         <div>
@@ -82,37 +120,54 @@
         <p>&copy; 2023 Your Company</p>
       </div>
     </footer>
+    <ModalAddExam :showModal="showModalAdd" @close="showModalAdd = false" />
+    <ScrollToTop />
   </div>
 </template>
 <script>
 import { mapState, mapActions } from 'vuex'
 import AccountMenu from '~/components/common/AccountMenu'
-import CategoryClassMenu from '~/components/common/CategoryMenu/CategoryClassMenu'
-import CategorySubjectMenu from '~/components/common/CategoryMenu/CategorySubjectMenu'
+import CategoryExamMenu from '~/components/common/CategoryMenu/CategoryExamMenu'
+import CategoryExerciseMenu from '~/components/common/CategoryMenu/CategoryExerciseMenu'
+import CreateExamExe from '~/components/common/CreateExamExe/CreateExamExe.vue'
 import HeadingCategory from '~/components/category/Heading.vue'
+import MenuBars from '~/components/common/MenuBars/MenuBars.vue'
+import ModalAddExam from '~/components/common/ModalAdd'
+import ScrollToTop from '~/components/common/ScrollToTop.vue'
 
 export default {
   name: 'default',
   components: {
     AccountMenu,
-    CategoryClassMenu,
-    CategorySubjectMenu,
+    CategoryExamMenu,
+    CategoryExerciseMenu,
+    CreateExamExe,
     HeadingCategory,
+    MenuBars,
+    ModalAddExam,
+    ScrollToTop,
   },
   data() {
     return {
       isMenuAccount: false,
       showDropdownClass: false,
       showDropdownSubject: false,
+      showDropdownCreate: false,
+      showDropdown: false,
+      showMenu: false,
+      showModalAdd: false,
     }
   },
   computed: {
     ...mapState('grade', ['listGrade']),
+    ...mapState('users', ['user']),
   },
   mounted() {
+    this.getInfoUser()
     this.getGrade()
   },
   methods: {
+    ...mapActions('users', ['getInfoUser']),
     ...mapActions('grade', ['getGrade']),
     toggleAccountMenu() {
       this.isMenuAccount = !this.isMenuAccount
@@ -123,12 +178,31 @@ export default {
     categoryOpenSubject() {
       this.showDropdownSubject = !this.showDropdownSubject
     },
+    openCreateExamEx() {
+      this.showDropdownCreate = !this.showDropdownCreate
+    },
+    openModalAddExam() {
+      this.showModalAdd = true
+    },
+    toggleMenu() {
+      this.showMenu = !this.showMenu
+    },
     closeModal() {
       this.showDropdownClass = false
       this.showDropdownSubject = false
+      this.showDropdownCreate = false
+      this.isMenuAccount = false
+    },
+    addClick() {
+      this.showModalAdd = true
+      this.showMenu = false
+    },
+    reloadHomePage() {
+      // Sử dụng $router.go để reload trang "/"
+      this.$router.go(0)
     },
     // goToCategory(nameGrade) {
-    //   this.$router.push('/classes')
+    //   this.$router.push('/category-exams')
     //   this.$root.$emit('name-grade', nameGrade)
     // },
   },
@@ -164,6 +238,12 @@ header {
   }
   .search-input {
     width: 200px;
+  }
+  .menu-responsive {
+    display: block;
+  }
+  .menu {
+    display: none;
   }
   /* .menu-class {
     font-size: 14px;

@@ -1,13 +1,13 @@
 <template>
   <div
-    class="menu absolute top-30 right-0 w-[300px] max-h-[400px] bg-white border border-gray-300 mt-2 rounded shadow-md z-50 overflow-auto"
+    class="menu absolute top-30 left-0 w-[150px] max-h-[400px] bg-white border border-gray-300 mt-2 rounded shadow-md z-50 overflow-auto"
   >
-    <ul class="grid grid-cols-2 gap-2 p-2 cursor-pointer">
+    <ul class="grid grid-cols-2 gap-2 cursor-pointer">
       <li
-        @click="goToCategory(item)"
+        @click="goToCategory(item.name)"
         v-for="item in listGrade"
         :key="item.id"
-        class="p-2 rounded bg-gray-200 hover:bg-gray-300 overflow-hidden whitespace-wrap text-ellipsis"
+        class="p-4 rounded text-[#5d5d5d] font-bold hover:bg-gray-300 overflow-hidden whitespace-wrap text-ellipsis transition duration-300 ease-in-out"
       >
         {{ item.name }}
       </li>
@@ -15,9 +15,10 @@
   </div>
 </template>
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+
 export default {
-  name: 'CategoryClassMenu',
+  name: 'CategoryExerciseMenu',
   data() {
     return {}
   },
@@ -28,37 +29,36 @@ export default {
   mounted() {
     this.getGrade()
     this.getCategory()
-    // this.$router.go(0)
-    // console.log(this.listGrade.slug)
   },
   methods: {
     ...mapActions('grade', ['getGrade']),
     ...mapActions('category', ['getCategory']),
 
-    goToCategory(nameGrade) {
+    async goToCategory(nameGrade) {
+      await this.getCategory(nameGrade.slug)
       this.$router.push({
-        path: ' ',
+        path: '/category-exercise',
         query: {
-          listGrade: JSON.stringify(this.listCategory),
+          listCategory: JSON.stringify(this.listCategory),
           nameGrade: nameGrade.name,
         },
       })
-      this.getCategory(nameGrade.slug)
-
-      // console.log('lll', this.nameGrade.slug)
-      // this.$root.$emit('name-grade', nameGrade.name)
+      console.log('log', this.listCategory)
     },
   },
 }
 </script>
 <style scoped>
 @media (min-width: 900px) {
+  .menu ul {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
 }
 
 @media (min-width: 360px) and (max-width: 899px) {
   .menu {
-    width: 150px;
-    max-height: 220px;
+    width: 200px;
+    max-height: 200px;
     left: 0;
   }
   .menu ul {

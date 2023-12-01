@@ -4,7 +4,12 @@
       class="bg-[#273c75] py-4 px-14 h-16 flex justify-between items-center sticky top-0"
     >
       <div class="flex items-center space-x-4">
-        <a to="/" class="logo-color text-2xl font-bold">LOGO</a>
+        <h1
+          @click="goToHome"
+          class="cursor-pointer logo-color text-2xl font-bold"
+        >
+          LOGO
+        </h1>
       </div>
     </header>
     <nuxt />
@@ -20,11 +25,25 @@
         <p>&copy; 2023 Your Company</p>
       </div>
     </footer>
+    <ModalOutExam :show-modal="showOutModal" @close="showOutModal = false" />
   </div>
 </template>
 <script>
+import ModalOutExam from '~/components/exam/ModalOutExam/OutExam.vue'
+
 export default {
   name: 'testLayout',
+  data() {
+    return { showOutModal: false }
+  },
+  components: {
+    ModalOutExam,
+  },
+  methods: {
+    goToHome() {
+      this.showOutModal = true
+    },
+  },
 }
 </script>
 <style scoped>

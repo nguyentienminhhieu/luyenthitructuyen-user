@@ -1,7 +1,7 @@
 <template>
-  <div class="pr-16">
-    <div class="flex justify-between items-center my-8">
-      <h2 class="text-lg font-semibold">Thông tin cá nhân</h2>
+  <div class="container mx-auto p-8 border-b-2">
+    <div class="flex justify-between my-8">
+      <h2 class="text-lg font-semibold text-[#273c75]">Thông tin cá nhân</h2>
       <div>
         <i
           class="fas fa-edit text-gray-500 hover:text-gray-700 cursor-pointer"
@@ -10,34 +10,61 @@
       </div>
     </div>
 
-    <div class="info">
-      <div class="info-1 flex flex-row justify-between mt-2">
-        <label>Username: <span>username</span></label>
-        <label>SDT: <span>099999</span></label>
-        <label>Email: <span>email</span></label>
-      </div>
-      <div class="info-1 flex flex-row justify-between mt-8">
-        <label>Roles: <span>roles</span></label>
-        <label>Class: <span>class</span></label>
-        <label>Email: <span>email</span></label>
-      </div>
-      <div class="info-1 flex flex-row justify-between mt-8">
-        <label>Trường: <span>Trường</span></label>
-        <label>Địa chỉ: <span>Địa chỉ</span></label>
-        <label>Email: <span>email</span></label>
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 space-y-6"
+    >
+      <div
+        v-for="(field, label) in userFields"
+        :key="label"
+        class="bg-white shadow-lg rounded-lg overflow-hidden"
+      >
+        <label class="font-semibold ml-2">{{ label }}:</label>
+        <span>{{ field }}</span>
       </div>
     </div>
-
-    <!-- Tương tự cho các thông tin khác -->
   </div>
 </template>
 <script>
-export default {
-  name: 'InfoPersonStudent',
+import { mapActions, mapState } from 'vuex'
+import Cookies from '@/services/cookies.service.js'
 
+export default {
+  name: 'InfoPersonUser',
+  computed: {
+    ...mapState('users', ['user']),
+    userFields() {
+      return {
+        Username: this.user.name,
+        SDT: this.user.phone,
+        Email: this.user.email,
+        'Vai trò': this.getRoleName(this.user.role),
+        Class: this.isStudent() ? this.user.grade_id : null,
+        Trường: this.user.school,
+        'Địa chỉ': this.user.address,
+      }
+    },
+  },
+  mounted() {
+    this.getInfoUser()
+  },
   methods: {
+    ...mapActions('users', ['getInfoUser']),
     editStudent() {
       this.$emit('edit-clicked')
+    },
+    isStudent() {
+      this.user.role === 1
+    },
+    getRoleName(role) {
+      switch (role) {
+        case 1:
+          return 'Học Sinh'
+        case 2:
+          return 'Giáo viên'
+        // Thêm các vai trò khác ở đây nếu cần
+        default:
+          return 'Null'
+      }
     },
   },
 }

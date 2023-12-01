@@ -30,7 +30,10 @@ export default {
   plugins: [],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
-  components: true,
+  components: [
+    '~/components/ExamByTeacher/DetailExam/Question.vue',
+    '~/components/ExamByTeacher/DetailExam/List/ListQuestions.vue',
+  ],
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
@@ -49,7 +52,7 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: process.env.BASE_URL || 'http://127.0.0.1:8000/api/',
+    baseURL: process.env.BASE_URL || 'http://127.0.0.1:8000/api/web',
   },
   env: {
     baseURL: process.env.BASE_URL,

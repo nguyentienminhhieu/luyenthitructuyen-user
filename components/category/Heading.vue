@@ -4,11 +4,7 @@
     <nuxt-link to="/" class="text-color-custom hover:text-color-custom"
       >Home</nuxt-link
     >
-    <!-- <p>/</p>
-    <p class="text-color-custom hover:text-color-custom cursor-pointer">
-      Category
-    </p> -->
-    <p>/</p>
+    <p>//</p>
     <p class="text-color-custom hover:text-color-custom cursor-pointer">
       {{ nameGrade }}
     </p>
@@ -35,7 +31,7 @@ export default {
   //   })
   // },
   mounted() {
-    console.log(this.nameGrade)
+    // console.log(this.nameGrade)
     // this.nameGrade
     // this.$emit('id-grade', this.nameGrade.id)
   },

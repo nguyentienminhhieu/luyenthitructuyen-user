@@ -4,32 +4,24 @@
     <nuxt-link to="/" class="text-color-custom hover:text-color-custom"
       >Home</nuxt-link
     >
-    <p>/</p>
+    <p>//</p>
     <p class="text-color-custom hover:text-color-custom cursor-pointer">
-      Category
+      {{ nameCategory }}
     </p>
-    <p>/</p>
-    <p class="text-color-custom hover:text-color-custom cursor-pointer">
-      Lop 6
-    </p>
-    <p>/</p>
-    <p class="text-color-custom hover:text-color-custom cursor-pointer">Toan</p>
   </div>
 </template>
 <script>
 export default {
   name: 'HeadingCategorySlug',
+  props: {
+    nameCategory: String,
+  },
   computed: {
-    // ...mapState('subject', ['listSubject']),
   },
   mounted() {
-    // this.getSubjects()
+
   },
   methods: {
-    // ...mapActions('subject', ['getSubjects']),
-    // goToCategory() {
-    //   this.$router.push(`/category`)
-    // },
   },
 }
 </script>

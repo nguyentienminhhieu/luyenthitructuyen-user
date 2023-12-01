@@ -2,17 +2,18 @@
   <div class="flex flex-row items-center space-x-2 m-6">
     <i class="fa-solid fa-arrow-right"></i>
     <p
-      v-if="isClassesPage"
-      @click="goToCategoryClass"
+      v-if="isExamPage"
+      @click="goToCategoryExams"
       class="text-color-custom hover:text-color-custom cursor-pointer"
     >
-      {{ nameSubject }}
+      {{ nameCategory }}
     </p>
     <p
-      @click="goToCategorySubject"
+      v-if="isExercisePage"
+      @click="goToCategoryExercise"
       class="text-color-custom hover:text-color-custom cursor-pointer"
     >
-      {{ nameGrade }}
+      {{ nameCategory }}
     </p>
   </div>
 </template>
@@ -20,22 +21,37 @@
 export default {
   name: 'HeaderDetail',
   props: {
-    nameSubject: String,
+    // nameSubject: String,
     nameGrade: String,
-    slugSubject: String,
-    slugGrade: String,
+    nameCategory: String,
+    // slugSubject: String,
+    slugCategory: String,
+    nameCategory: String,
   },
   computed: {
-    isClassesPage() {
-      return this.$nuxt.context.route.path === '/classes'
+    isExamPage() {
+      return this.$nuxt.context.route.path === '/category-exams'
+    },
+    isExercisePage() {
+      return this.$nuxt.context.route.path === '/category-exercise'
     },
   },
+  mounted() {},
   methods: {
-    goToCategoryClass() {
-      this.$router.push(`/classes/${slugGrade}`)
+    goToCategoryExams() {
+      // console.log('log', this.slugGrade)
+      this.$router.push({
+        path: `/category-exams/${this.nameCategory}`,
+        query: {
+          nameCategory: this.nameCategory,
+          nameGrade: this.nameGrade,
+          slugCategory: this.slugCategory,
+        },
+      })
+      this.$router.go(1)
     },
-    goToCategorySubject() {
-      this.$router.push(`/subjects/${slugSubject}`)
+    goToCategoryExercise() {
+      this.$router.push(`/category-exercise/${this.nameCategory}`)
     },
   },
 }

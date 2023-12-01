@@ -22,7 +22,6 @@ export const actions = {
       )
       const data = response.data
       commit('SET_CATEGORY', data.data)
-      // console.log(data.data)
     } catch (error) {
       console.log('Loi sever, ', error)
     }

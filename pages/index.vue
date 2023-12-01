@@ -22,6 +22,12 @@ export default {
     RankHistory,
   },
   computed: {},
+  mounted() {
+    localStorage.removeItem('answersKey')
+    localStorage.removeItem('remainingTime')
+    localStorage.removeItem('questionData')
+
+  },
   methods: {},
 }
 </script>

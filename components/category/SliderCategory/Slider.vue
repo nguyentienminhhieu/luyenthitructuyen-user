@@ -7,25 +7,31 @@
         }"
         class="flex ease-in-out duration-500"
       >
-        <div
-          v-for="(lesson, index) in displayedLessons"
-          :key="index"
-          class="image-screensmall w-1/5 p-2 hover:opacity-100 transform transition-transform hover:scale-105"
-        >
-          <img
-            :src="lesson.image"
-            alt="Lesson Image"
-            class="lesson-image rounded-lg mb-2 hover:scale-105 cursor-pointer"
-          />
-          <div class="lesson-title text-lg font-bold mb-2">
-            {{ lesson.title }}
-          </div>
-          <div class="lesson-description text-sm">
-            {{ lesson.description }}
+        <div class="flex flex-row">
+          <div
+            v-for="(exam, index) in examBySlug"
+            :key="index"
+            class="image-screensmall w-1/5 p-2 mx-2 hover:opacity-100 transform transition-transform hover:scale-105"
+          >
+            <div v-if="exam.url_img">
+              <img
+                :src="exam.url_img"
+                alt="exam Image"
+                class="exam-image rounded-lg mb-2 hover:scale-105 cursor-pointer"
+              />
+            </div>
+            <div class="text-lg font-bold mb-2">
+              {{ truncateTitle(exam.title, 40) }}
+            </div>
+            <div class="flex justify-between items-center text-sm">
+              <span class="italic">{{ exam.category?.grade?.name }}</span>
+              <span class="italic">{{ exam.category?.subject?.name }}</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
     <button
       @click="prevSlide"
       class="prev-button absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-400 hover:bg-gray-500 text-white p-2 px-4 rounded-full"
@@ -41,84 +47,53 @@
   </div>
 </template>
 <script>
+import { mapActions, mapState } from 'vuex'
+
 export default {
   name: 'SliderCategoryDetail',
+  props: {
+    slugCategory: String,
+  },
   data() {
     return {
-      lessons: [
-        {
-          title: 'Lesson 1',
-          description: 'This is the description for lesson 1.',
-          image: require('~/assets/img/hotExam/E3JeIlBkVSbcEMM4Z7HKsrsHZyuGy0Q5uL5f8bxQ.jpg'),
-        },
-        {
-          title: 'Lesson 2',
-          description: 'This is the description for lesson 2.',
-          image: require('~/assets/img/hotExam/E3JeIlBkVSbcEMM4Z7HKsrsHZyuGy0Q5uL5f8bxQ.jpg'),
-        },
-        {
-          title: 'Lesson 3',
-          description: 'This is the description for lesson 3.',
-          image: require('~/assets/img/hotExam/E3JeIlBkVSbcEMM4Z7HKsrsHZyuGy0Q5uL5f8bxQ.jpg'),
-        },
-        {
-          title: 'Lesson 4',
-          description: 'This is the description for lesson 4.',
-          image: require('~/assets/img/hotExam/E3JeIlBkVSbcEMM4Z7HKsrsHZyuGy0Q5uL5f8bxQ.jpg'),
-        },
-        {
-          title: 'Lesson 5',
-          description: 'This is the description for lesson 5.',
-          image: require('~/assets/img/hotExam/E3JeIlBkVSbcEMM4Z7HKsrsHZyuGy0Q5uL5f8bxQ.jpg'),
-        },
-        {
-          title: 'Lesson 6',
-          description: 'This is the description for lesson 6.',
-          image: require('~/assets/img/hotExam/E3JeIlBkVSbcEMM4Z7HKsrsHZyuGy0Q5uL5f8bxQ.jpg'),
-        },
-        {
-          title: 'Lesson 7',
-          description: 'This is the description for lesson 6.',
-          image: require('~/assets/img/hotExam/E3JeIlBkVSbcEMM4Z7HKsrsHZyuGy0Q5uL5f8bxQ.jpg'),
-        },
-        {
-          title: 'Lesson 8',
-          description: 'This is the description for lesson 6.',
-          image: require('~/assets/img/hotExam/E3JeIlBkVSbcEMM4Z7HKsrsHZyuGy0Q5uL5f8bxQ.jpg'),
-        },
-        {
-          title: 'Lesson 9',
-          description: 'This is the description for lesson 6.',
-          image: require('~/assets/img/hotExam/E3JeIlBkVSbcEMM4Z7HKsrsHZyuGy0Q5uL5f8bxQ.jpg'),
-        },
-        {
-          title: 'Lesson 10',
-          description: 'This is the description for lesson 6.',
-          image: require('~/assets/img/hotExam/E3JeIlBkVSbcEMM4Z7HKsrsHZyuGy0Q5uL5f8bxQ.jpg'),
-        },
-      ],
       currentSlide: 0,
       slideWidth: 5,
       isSmallScreen: false,
+      examBySlug: [],
     }
   },
   computed: {
+    ...mapState('exam', ['listExam']),
     totalSlides() {
-      return Math.ceil(this.lessons.length / this.slideWidth)
+      return Math.ceil(this.listExam.length / this.slideWidth)
     },
-    displayedLessons() {
+    displayedexams() {
       const totalSlides = this.totalSlides
       const start = this.currentSlide * this.slideWidth
       const end = start + this.slideWidth
 
       if (this.currentSlide === totalSlides - 1) {
-        return this.lessons.slice(start)
+        return this.listExam.slice(start)
       } else {
-        return this.lessons.slice(start, end)
+        return this.listExam.slice(start, end)
       }
     },
   },
+  created() {
+    this.updateWindowSize()
+    window.addEventListener('resize', this.updateWindowSize)
+    // console.log('ll: ', this.listExam)
+  },
+  async mounted() {
+    // console.log('ll123: ', this.slugCategory)
+    await this.getListExamCategory(this.slugCategory)
+    this.examBySlug = this.listExam
+    // console.log('ll1111111111111: ', this.listExam)
+  },
+
   methods: {
+    ...mapActions('exam', ['getListExamCategory']),
+
     nextSlide() {
       const totalSlides = this.totalSlides
       const nextIndex = this.currentSlide + 1
@@ -148,10 +123,15 @@ export default {
         this.isSmallScreen = false
       }
     },
-  },
-  created() {
-    this.updateWindowSize()
-    window.addEventListener('resize', this.updateWindowSize)
+    truncateTitle(title, maxLength) {
+      if (title.length > maxLength) {
+        return title.substring(0, maxLength) + '...'
+      }
+      return title
+    },
+    getFirstTenChars(text) {
+      return text ? text.slice(0, 20) : ''
+    },
   },
 }
 </script>

@@ -2,7 +2,7 @@
   <div>
     <button
       v-if="isScrolling"
-      class="fixed bottom-4 right-4 rounded-full bg-[#c7bf22] p-2 text-white"
+      class="fixed w-14 h-14 bottom-4 right-4 rounded-full bg-[#c7bf22] hover:bg-[#a0990f] text-white z-50"
       @click="scrollToTop"
     >
       <i class="fas fa-arrow-up"></i>

@@ -1,11 +1,9 @@
 <template>
-  <div class=""></div>
+  <div></div>
 </template>
-
 <script>
 export default {
-  name: 'DescriptionExam',
+  layout: 'error',
 }
 </script>
-
 <style></style>

@@ -24,7 +24,7 @@
         <div class="lg:my-0 mb-6">
           <button
             class="btn-confirm-1 px-5 py-2 bg-[#273c75] hover:bg-[#395193] text-white rounded-md"
-            @click="handleResult"
+            @click="handleSend"
           >
             Nộp bài
             <i class="fa-regular fa-paper-plane px-1"></i>
@@ -36,18 +36,31 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex'
+
 export default {
   name: 'ModalSendExam',
   components: {},
   props: {
     showModal: Boolean,
+    payload: Object,
   },
+  computed: {
+    ...mapState('exam', ['takeExams']),
+  },
+  mounted() {},
   methods: {
+    ...mapActions('exam', ['submitExam']),
+
     closeModal() {
       this.$emit('close')
     },
-    handleResult() {
+    async handleSend() {
+      await this.submitExam(this.payload)
       this.$emit('result-clicked')
+      this.$emit('take-exams', this.takeExams)
+      localStorage.removeItem('remainingTime')
+      localStorage.removeItem('answersKey')
     },
   },
 }
