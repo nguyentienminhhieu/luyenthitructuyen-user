@@ -8,7 +8,7 @@
           to="/"
           @click="reloadHomePage"
           class="logo-color text-2xl font-bold"
-          >LOGO</nuxt-link
+          >LuyenThiTracNghiem</nuxt-link
         >
       </div>
       <div class="menu flex">
@@ -60,7 +60,7 @@
         </button>
       </div>
       <div
-        @click="openModalAddExam"
+        @click="openCreateExamEx"
         v-if="user.role === 2"
         class="menu relative m-4"
       >
@@ -68,7 +68,11 @@
           <i class="fa-regular fa-calendar-plus mx-1"></i>
           TẠO ĐỀ
         </h1>
-        <!-- <CreateExamExe v-if="showDropdownCreate" /> -->
+        <CreateExamExe
+          v-if="showDropdownCreate"
+          @open-add-exam="showModalAddExam = true"
+          @open-add-exercise="showModalAddExercise = true"
+        />
       </div>
       <div class="flex items-center space-x-4">
         <!-- <button
@@ -94,7 +98,8 @@
           </div>
 
           <MenuBars
-            @add-click="addClick"
+            @add-exam-click="addExamClick"
+            @add-exercise-click="addExerciseClick"
             key="menu-bars"
             class="transform transition-transform ease-out -z-10"
             :class="{
@@ -120,7 +125,14 @@
         <p>&copy; 2023 Your Company</p>
       </div>
     </footer>
-    <ModalAddExam :showModal="showModalAdd" @close="showModalAdd = false" />
+    <ModalAddExam
+      :showModal="showModalAddExam"
+      @close="showModalAddExam = false"
+    />
+    <ModalAddExercise
+      :showModal="showModalAddExercise"
+      @close="showModalAddExercise = false"
+    />
     <ScrollToTop />
   </div>
 </template>
@@ -133,6 +145,7 @@ import CreateExamExe from '~/components/common/CreateExamExe/CreateExamExe.vue'
 import HeadingCategory from '~/components/category/Heading.vue'
 import MenuBars from '~/components/common/MenuBars/MenuBars.vue'
 import ModalAddExam from '~/components/common/ModalAdd'
+import ModalAddExercise from '~/components/ExerciseByTeacher/ModalAdd'
 import ScrollToTop from '~/components/common/ScrollToTop.vue'
 
 export default {
@@ -145,6 +158,7 @@ export default {
     HeadingCategory,
     MenuBars,
     ModalAddExam,
+    ModalAddExercise,
     ScrollToTop,
   },
   data() {
@@ -155,7 +169,8 @@ export default {
       showDropdownCreate: false,
       showDropdown: false,
       showMenu: false,
-      showModalAdd: false,
+      showModalAddExam: false,
+      showModalAddExercise: false,
     }
   },
   computed: {
@@ -181,9 +196,6 @@ export default {
     openCreateExamEx() {
       this.showDropdownCreate = !this.showDropdownCreate
     },
-    openModalAddExam() {
-      this.showModalAdd = true
-    },
     toggleMenu() {
       this.showMenu = !this.showMenu
     },
@@ -193,8 +205,12 @@ export default {
       this.showDropdownCreate = false
       this.isMenuAccount = false
     },
-    addClick() {
-      this.showModalAdd = true
+    addExamClick() {
+      this.showModalAddExam = true
+      this.showMenu = false
+    },
+    addExerciseClick() {
+      this.showModalAddExercise = true
       this.showMenu = false
     },
     reloadHomePage() {

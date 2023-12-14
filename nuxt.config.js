@@ -33,6 +33,8 @@ export default {
   components: [
     '~/components/ExamByTeacher/DetailExam/Question.vue',
     '~/components/ExamByTeacher/DetailExam/List/ListQuestions.vue',
+    '~/components/ExerciseByTeacher/DetailExercise/Question.vue',
+    '~/components/ExerciseByTeacher/DetailExercise/List/ListQuestions.vue',
   ],
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
@@ -55,7 +57,8 @@ export default {
     baseURL: process.env.BASE_URL || 'http://127.0.0.1:8000/api/web',
   },
   env: {
-    baseURL: process.env.BASE_URL,
+    BASE_URL: process.env.BASE_URL,
+    BASE_URL_UPLOAD: process.env.BASE_URL_UPLOAD,
   },
 
   router: {

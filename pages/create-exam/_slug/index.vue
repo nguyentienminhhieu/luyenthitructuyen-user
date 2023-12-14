@@ -32,38 +32,27 @@
     </div>
     <div class="mt-4 mx-7">
       <ListQuestions :questions-extends="questions" />
-      <TableExamDone />
     </div>
     <BtnPushQ @push-array="pushArray" />
-    <SaveBtn
-      :detail-exam="detailExamDeep"
-      :list-questions="questions"
-      @send-data="data"
-    />
+    <SaveBtn :detail-exam="detailExamDeep" :list-questions="questions" />
   </div>
 </template>
 <script>
-import { mapActions, mapState, mapMutations } from 'vuex'
-import HeadingDetailExam from '~/components/ExamByTeacher/DetailExam/Heading.vue'
+import { mapActions, mapState } from 'vuex'
 import ListQuestions from '~/components/ExamByTeacher/DetailExam/List/ListQuestions.vue'
-import TableExamDone from '~/components/accounts/user/Detail_personal/TableExamDone.vue'
-import ModalEditExam from '~/components/common/ModalEdit/index.vue'
 import SaveBtn from '~/components/common/SaveBtn.vue'
 import BtnPushQ from '~/components/common/BtnPushQ.vue'
-
+// import RedirectQuestion from '~/components/admin/exams/DetailExam/redirectQuestion.vue'
 export default {
-  name: 'DetailExamByTeacher',
+  name: 'DetailExamByTracher',
   components: {
-    HeadingDetailExam,
     ListQuestions,
-    TableExamDone,
-    ModalEditExam,
     SaveBtn,
     BtnPushQ,
+    // RedirectQuestion,
   },
   data() {
     return {
-      saveExam: null,
       questions: [],
       examID: null,
       detailExamDeep: null,
@@ -117,6 +106,7 @@ export default {
         content: `Câu ${this.questions.length + 1}.`,
         slug: '',
         description: '',
+        explanation: '',
         file: '',
         type: null,
         answers: [],
@@ -143,16 +133,13 @@ export default {
       const clonedQuestions = JSON.parse(JSON.stringify(this.questions))
       localStorage.setItem('questionData', JSON.stringify(clonedQuestions))
     },
-    data(item) {
-      this.saveExam = item
-    },
   },
 }
 </script>
 <style>
 @media (max-width: 1024px) {
-  .flex-colll {
-    display: block;
+  .redirect-question {
+    display: none;
   }
 }
 </style>

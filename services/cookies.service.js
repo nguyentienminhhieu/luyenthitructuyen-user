@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-const TOKEN = 'token'
+const TOKEN = 'tokenUser'
 const USER = 'user'
 const EMAIL = 'email'
 

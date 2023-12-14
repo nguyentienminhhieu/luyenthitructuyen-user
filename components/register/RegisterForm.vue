@@ -185,6 +185,8 @@
                     ? 'Bạn nhập quá số lượng chữ cho phép!'
                     : !$v.ruleForm.password.minLength
                     ? 'Bạn nhập ít chữ quá!'
+                    : !$v.ruleForm.password.passwordRegex
+                    ? 'Sai định dạng mật khẩu!'
                     : ''
                 }}
               </span>
@@ -265,9 +267,10 @@
               class="w-full border-b-2 focus:outline-none p-1"
               required
             >
-              <option v-for="item in listGrade" :key="item.id">
-                {{ item.name }}
-              </option>
+              <option value="1">Lớp 6</option>
+              <option value="2">Lớp 7</option>
+              <option value="3">Lớp 8</option>
+              <option value="4">Lớp 9</option>
             </select>
           </div>
           <div>
@@ -293,11 +296,7 @@
             >
               <span :style="{ width: '90%' }">
                 {{
-                  !$v.ruleForm.school.required
-                    ? 'Vui lòng nhập dữ liệu!'
-                    : !$v.ruleForm.school.mustNotSymbol
-                    ? 'Vui lòng nhập đúng định dạng!'
-                    : ''
+                  !$v.ruleForm.school.required ? 'Vui lòng nhập dữ liệu!' : ''
                 }}
               </span>
             </div>
@@ -345,6 +344,7 @@ import {
   checkStatusClass,
   mustNotSymbol,
   mustOnlyNumberAndSymbol,
+  passwordRegex,
 } from '~/mixins/ruleValidator'
 export default {
   name: 'RegisterForm',
@@ -393,6 +393,7 @@ export default {
         required,
         maxLength: maxLength(20),
         minLength: minLength(6),
+        passwordRegex,
       },
       // confirmpassword: {
       //   required,
@@ -400,7 +401,6 @@ export default {
       // },
       school: {
         required,
-        mustNotSymbol,
       },
       address: {
         required,
@@ -440,7 +440,7 @@ export default {
             email: this.ruleForm.email,
             password: this.ruleForm.password,
             role: this.ruleForm.roles,
-            adress: this.ruleForm.address,
+            address: this.ruleForm.address,
             school: this.ruleForm.school,
             grade_id: this.ruleForm.class,
           }

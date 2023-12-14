@@ -180,6 +180,7 @@ import ToastError from '~/components/common/ToastError.vue'
 export default {
   name: 'ModalEditExam',
   components: {
+    ToastSuccess,
     ToastError,
   },
   mixins: [validationMixin],
@@ -262,7 +263,7 @@ export default {
           max_score: this.ruleForm.examScore,
           url_img: this.ruleForm.selectedImage,
         }
-        this.updateExam(payload)
+        this.updateExamByTeacher(payload)
           .then(() => {
             this.showSuccessToast = true
             setTimeout(() => {
@@ -275,11 +276,11 @@ export default {
             setTimeout(() => {
               this.showErrorToast = false
             }, 3000)
-            console.error('Lỗi khi cập nhật môn học:', error)
+            console.error('Lỗi khi cập nhật:', error)
           })
         // this.update()
         // console.log(this.examItem.id)
-        this.closeModal()
+        // this.closeModal()
       }
     },
     changeAvatar() {

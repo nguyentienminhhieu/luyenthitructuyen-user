@@ -1,17 +1,35 @@
 <template>
-  <div
-    class="menu absolute top-30 left-0 w-[150px] max-h-[400px] bg-white border border-gray-300 mt-2 rounded shadow-md z-50 overflow-auto"
-  >
-    <ul class="grid grid-cols-2 gap-2 cursor-pointer">
-      <li
-        @click="goToCategory(item.name)"
-        v-for="item in listGrade"
-        :key="item.id"
-        class="p-4 rounded text-[#5d5d5d] font-bold hover:bg-gray-300 overflow-hidden whitespace-wrap text-ellipsis transition duration-300 ease-in-out"
-      >
-        {{ item.name }}
-      </li>
-    </ul>
+  <div>
+    <div
+      class="menu absolute top-30 left-0 w-[150px] max-h-[400px] bg-white border border-gray-300 mt-2 rounded shadow-md z-50 overflow-auto"
+    >
+      <ul class="grid grid-cols-2 gap-2 cursor-pointer">
+        <li
+          @click="goToCategory(item)"
+          v-for="item in listGrade"
+          :key="item.id"
+          class="p-4 rounded text-[#5d5d5d] font-bold hover:bg-gray-300 overflow-hidden whitespace-wrap text-ellipsis transition duration-300 ease-in-out"
+        >
+          {{ item.name }}
+        </li>
+      </ul>
+    </div>
+    <div
+      v-if="showNewMenu"
+      class="new-menu absolute top-30 left-[150px] w-[170px] max-h-[400px] bg-white border border-gray-300 mt-2 rounded shadow-md z-50 overflow-auto"
+    >
+      <ul class="grid grid-cols-2 gap-2 cursor-pointer">
+        <!-- Hiển thị nội dung menu mới -->
+        <li
+          @click="goToPageCategory(category)"
+          v-for="category in listCategory"
+          :key="category.id"
+          class="p-4 rounded text-[#5d5d5d] font-bold hover:bg-gray-300 overflow-hidden whitespace-wrap text-ellipsis transition duration-300 ease-in-out"
+        >
+          {{ category.title }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 <script>
@@ -20,7 +38,9 @@ import { mapState, mapActions } from 'vuex'
 export default {
   name: 'CategoryExerciseMenu',
   data() {
-    return {}
+    return {
+      showNewMenu: false,
+    }
   },
   computed: {
     ...mapState('grade', ['listGrade']),
@@ -34,16 +54,19 @@ export default {
     ...mapActions('grade', ['getGrade']),
     ...mapActions('category', ['getCategory']),
 
-    async goToCategory(nameGrade) {
-      await this.getCategory(nameGrade.slug)
+    async goToCategory(item) {
+      this.showNewMenu = !this.showNewMenu
+
+      await this.getCategory(item.slug)
+    },
+    goToPageCategory(category) {
       this.$router.push({
-        path: '/category-exercise',
+        path: `/category-exercise/${category.slug}`,
         query: {
-          listCategory: JSON.stringify(this.listCategory),
-          nameGrade: nameGrade.name,
+          slugCategory: category.slug,
+          nameCategory: category.title,
         },
       })
-      console.log('log', this.listCategory)
     },
   },
 }

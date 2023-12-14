@@ -14,14 +14,14 @@
               />
             </div>
 
-            <div v-if="question.file" class="my-4">
+            <div v-if="question.file" class="my-4 mx-auto">
               <button @click="clearImage">
                 <i class="fa-solid fa-x"></i>
               </button>
               <img
                 :src="question.file"
                 alt="Ảnh"
-                class="w-50 h-40 rounded-xl mx-auto"
+                class="w-50 h-40 rounded-xl"
               />
             </div>
           </div>
@@ -55,7 +55,9 @@
                 type="file"
                 class="hidden"
                 accept="image/*"
-                @change="handleFileChange(question.random_Id, $event)"
+                @change="
+                  handleFileChange(question.random_Id || question.id, $event)
+                "
               />
             </label>
           </button>
@@ -80,15 +82,15 @@
   </div>
 </template>
 <script>
+// import ListQuestions from '~/components/admin/exams/DetailExam/List/ListQuestions.vue'
 import { mapActions, mapState, mapMutations } from 'vuex'
 import AnswerQuestion from './Answer.vue'
-// import ListQuestions from './List/ListQuestions.vue'
 import ToastError from '~/components/common/ToastError.vue'
 import TinyMCE from '~/components/ExamByTeacher/DetailExam/TinyMCE.vue'
-
 export default {
   name: 'QuestionExam',
   components: {
+    // ListQuestions,
     AnswerQuestion,
     TinyMCE,
     ToastError,
@@ -112,6 +114,13 @@ export default {
     hasAnswers() {
       return this.question.answers.length > 0
     },
+    questionFile() {
+      if (this.question.id) {
+        return this.question.random_Id
+      } else {
+        return this.question.random_Id
+      }
+    },
   },
   watch: {
     'questionData.content'(newVal) {
@@ -131,6 +140,7 @@ export default {
         content: '',
         slug: '',
         description: '',
+        explanation: '',
         file: '',
         type: null,
         answers: [],
@@ -163,11 +173,9 @@ export default {
               const match = /"url":\s*"([^"]+)"/.exec(this.fileUpload)
               if (match && match[1]) {
                 const url = match[1]
-                console.log(url.replaceAll('\\', ''))
                 // eslint-disable-next-line vue/no-mutating-props
-                this.selectedImage = url.replaceAll('\\', '')
-                // eslint-disable-next-line vue/no-mutating-props
-                this.question.file = this.selectedImage
+                this.question.file = url.replaceAll('\\', '')
+                console.log(this.question.id)
               } else {
                 console.log('Không tìm thấy giá trị URL.')
               }
@@ -204,7 +212,6 @@ export default {
         // eslint-disable-next-line vue/no-mutating-props
         this.question.answers.splice(index, 1)
       }
-      console.log(123)
     },
   },
 }

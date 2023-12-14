@@ -35,8 +35,7 @@ export default {
   methods: {
     ...mapActions('users', ['getInfoUser']),
     changeAvatar() {
-      console.log('123', this.user.id)
-      this.$emit('upload-avatar-clicked')
+      this.$emit('upload-avatar-clicked', this.user)
     },
     getRoleName(role) {
       // Định nghĩa tên vai trò dựa trên giá trị role (1, 2, ...)

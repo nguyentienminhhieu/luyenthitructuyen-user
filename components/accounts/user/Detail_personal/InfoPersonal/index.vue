@@ -5,21 +5,20 @@
       <div>
         <i
           class="fas fa-edit text-gray-500 hover:text-gray-700 cursor-pointer"
-          @click="editStudent"
+          @click="editStudent(user)"
         ></i>
       </div>
     </div>
 
-    <div
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 space-y-6"
-    >
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 space-y-6">
       <div
         v-for="(field, label) in userFields"
         :key="label"
         class="bg-white shadow-lg rounded-lg overflow-hidden"
       >
         <label class="font-semibold ml-2">{{ label }}:</label>
-        <span>{{ field }}</span>
+        <span v-if="label === 'Class'">{{ userClass }}</span>
+        <span v-else>{{ field }}</span>
       </div>
     </div>
   </div>
@@ -35,12 +34,26 @@ export default {
     userFields() {
       return {
         Username: this.user.name,
-        SDT: this.user.phone,
         Email: this.user.email,
         'Vai trò': this.getRoleName(this.user.role),
-        Class: this.isStudent() ? this.user.grade_id : null,
+        Class: this.user.grade_id,
         Trường: this.user.school,
         'Địa chỉ': this.user.address,
+      }
+    },
+    userClass() {
+      // Sử dụng switch để chuyển đổi grade_id thành lớp tương ứng
+      switch (this.user.grade_id) {
+        case 1:
+          return 'Lớp 6'
+        case 2:
+          return 'Lớp 7'
+        case 3:
+          return 'Lớp 8'
+        case 4:
+          return 'Lớp 9'
+        default:
+          return 'Không xác định'
       }
     },
   },
@@ -49,8 +62,8 @@ export default {
   },
   methods: {
     ...mapActions('users', ['getInfoUser']),
-    editStudent() {
-      this.$emit('edit-clicked')
+    editStudent(user) {
+      this.$emit('edit-user-clicked', user)
     },
     isStudent() {
       this.user.role === 1

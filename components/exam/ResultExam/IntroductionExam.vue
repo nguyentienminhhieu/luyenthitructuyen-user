@@ -1,11 +1,11 @@
 <template>
   <div
-    class="container-1 bg-white flex flex-col rounded-lg fixed max-h-[500px] overflow-y-auto pb-4"
+    class="container-1 bg-white flex flex-col rounded-lg fixed max-h-[600px] overflow-y-auto pb-4"
   >
     <div class="p-2">
       <div class="mb-2">
         <h1 class="text-lg font-semibold text-center text-[#5d5d5d]">
-          Tổng điểm: {{ totalScore }}
+          Tổng điểm: {{ totalScore }} / 100
         </h1>
         <p></p>
       </div>
@@ -24,6 +24,42 @@
           {{ question.index }}
         </button>
       </div>
+      <h1 class="mt-8 text-[#5d5d5d] font-medium">Đánh giá:</h1>
+      <div v-if="user.role === 2">
+        <div class="flex">
+          <textarea
+            v-if="inputTitle"
+            v-model="feedback"
+            name=""
+            id=""
+            class="border-2 outline-none"
+            cols="50"
+            rows="0"
+          ></textarea>
+          <div v-if="feedbackTitle" class="m-4 w-[200px] break-words">
+            {{ feedback }}
+          </div>
+          <button
+            v-if="inputTitle"
+            class="mx-3 px-3 py-2 bg-[#273c75] hover:bg-[#395193] text-white rounded-md"
+            @click="sendFeedback"
+          >
+            Send
+          </button>
+          <button
+            v-else
+            class="mx-3 px-3 py-2 bg-[#273c75] hover:bg-[#395193] text-white rounded-md"
+            @click="editFeedback"
+          >
+            Edit
+          </button>
+        </div>
+      </div>
+      <div v-if="user.role === 1">
+        <div class="m-4 w-[200px] break-words">
+          {{ feedback }}
+        </div>
+      </div>
     </div>
     <div class="flex justify-center my-6">
       <button
@@ -37,7 +73,7 @@
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import Vue from 'vue'
 export const EventBus = new Vue()
 export default {
@@ -47,7 +83,14 @@ export default {
     totalScore: Number,
   },
   data() {
-    return {}
+    return {
+      feedback: '',
+      inputTitle: true,
+      feedbackTitle: false,
+    }
+  },
+  computed: {
+    ...mapState('users', ['user']),
   },
   mounted() {},
   methods: {
@@ -62,6 +105,24 @@ export default {
     },
     isCorrectQuestion(question) {
       return question.is_success == true
+    },
+    // sendFeedback() {},
+    sendFeedback() {
+      if (this.feedback.trim() === '') {
+        this.showErrorToast = true
+        setTimeout(() => {
+          this.showErrorToast = false
+        }, 3000)
+        return
+      }
+
+      // eslint-disable-next-line vue/no-mutating-props
+      this.feedbackTitle = true
+      this.inputTitle = false
+    },
+    editFeedback() {
+      this.inputTitle = true
+      this.feedbackTitle = false
     },
   },
 }

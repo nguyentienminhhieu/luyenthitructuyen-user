@@ -6,7 +6,7 @@
     >
     <p>//</p>
     <p class="text-color-custom hover:text-color-custom cursor-pointer">
-      {{ nameCategory }}
+      {{ nameCategory }} - Exam
     </p>
   </div>
 </template>
@@ -16,13 +16,9 @@ export default {
   props: {
     nameCategory: String,
   },
-  computed: {
-  },
-  mounted() {
-
-  },
-  methods: {
-  },
+  computed: {},
+  mounted() {},
+  methods: {},
 }
 </script>
 <style></style>

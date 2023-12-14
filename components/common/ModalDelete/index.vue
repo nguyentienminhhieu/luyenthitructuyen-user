@@ -46,6 +46,7 @@ export default {
   props: {
     showModal: Boolean,
     examId: Number,
+    exerciseId: Number,
   },
   data() {
     return {
@@ -63,9 +64,13 @@ export default {
       try {
         if (this.examId) {
           this.$store.dispatch('examByTeacher/deleteExamByTeacher', this.examId)
+        } else if (this.exerciseId) {
+          this.$store.dispatch(
+            'exerciseByTeacher/deleteExercise',
+            this.exerciseId
+          )
         }
         this.closeModal()
-        this.$router.go(0)
       } catch (error) {
         this.showErrorToast = true
         setTimeout(() => {

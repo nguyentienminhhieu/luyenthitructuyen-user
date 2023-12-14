@@ -25,8 +25,7 @@ export const actions = {
         examItem,
         config
       )
-      const data = response
-      commit('UPDATE_EXAM', data.data)
+      return response
     } catch (error) {
       console.log('Error123:', error)
     }

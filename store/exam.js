@@ -95,7 +95,7 @@ export const actions = {
         '/list-exam-has-been-done-by-user',
         {
           params: {
-            id: examID,
+            exam_id: examID,
           },
           ...config,
         }

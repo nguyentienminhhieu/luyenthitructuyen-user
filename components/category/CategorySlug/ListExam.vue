@@ -21,6 +21,12 @@
             /
             <span class="italic">{{ exam.category?.grade?.name }}</span>
           </div>
+          <div class="mt-4">
+            <span class="italic text-sm text-gray-500"
+              >Người đăng:
+              {{ exam.user_id === null ? 'Admin' : 'Giáo viên' }}</span
+            >
+          </div>
         </div>
       </div>
     </div>

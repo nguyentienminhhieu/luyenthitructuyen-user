@@ -24,8 +24,18 @@
                 <i class="fa-solid fa-check text-[#4ccc81]"></i>
               </div>
               <h3 class="text-base font-medium text-[#5d5d5d] ml-1">
-                {{ question.content }}
+                <span v-html="question.content"></span>
               </h3>
+              <div
+                v-if="question.file"
+                class="max-w-[300px] max-h-[200px] mx-auto"
+              >
+                <img
+                  :src="question.file"
+                  alt=""
+                  class="w-full h-full object-contain"
+                />
+              </div>
             </div>
             <div class="mt-2">
               <ul>
@@ -46,12 +56,12 @@
                       :value="answer.id"
                       class="mr-2 cursor-pointer sr-only"
                     />
-                    {{ answer.content }}
+                    <span v-html="answer.content"></span>
                   </label>
                 </li>
               </ul>
               <div v-for="answer in question.answers" :key="answer.id">
-                <div v-if="answer.explanation !== null">
+                <div v-if="answer.explanation !== ''">
                   <h1 class="text-[#5d5d5d] font-medium">
                     Giải Thích: {{ answer.explanation }}
                   </h1>

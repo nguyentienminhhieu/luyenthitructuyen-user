@@ -1,17 +1,31 @@
 <template>
-  <div>
-    <HeadingCategorySlug />
-    <ListExamCategory />
+  <div v-if="nameCategory && slugCategory">
+    <HeadingCategorySlug :name-category="nameCategory" />
+    <ListExerciseCategory :slug-category="slugCategory" />
   </div>
 </template>
 <script>
-import HeadingCategorySlug from '~/components/category/CategorySlug/Heading.vue'
-import ListExamCategory from '~/components/category/CategorySlug/ListExam.vue'
+import HeadingCategorySlug from '~/components/category/CategorySlug/HeadingExercise.vue'
+import ListExerciseCategory from '~/components/category/CategorySlug/ListExercise.vue'
 export default {
-  name: 'CategorySubjectSlug',
+  name: 'CategoryExerciseSlug',
   components: {
     HeadingCategorySlug,
-    ListExamCategory,
+    ListExerciseCategory,
+  },
+  data() {
+    return {
+      nameCategory: '',
+      slugCategory: '',
+    }
+  },
+  mounted() {
+    if (this.$route.query.nameCategory) {
+      this.nameCategory = this.$route.query.nameCategory
+    }
+    if (this.$route.query.slugCategory) {
+      this.slugCategory = this.$route.query.slugCategory
+    }
   },
 }
 </script>

@@ -8,7 +8,7 @@
           @click="goToHome"
           class="cursor-pointer logo-color text-2xl font-bold"
         >
-          LOGO
+          LuyenThiTracNghiem
         </h1>
       </div>
     </header>

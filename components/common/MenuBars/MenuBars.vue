@@ -6,7 +6,7 @@
       <ul class="p-0 m-0">
         <li class="group border-b border-gray-200">
           <div
-            @click="openModalAddExam"
+            @click="openDownCreate"
             v-if="user.role === 2"
             class="flex items-center justify-between p-3 rounded transition duration-300 cursor-pointer text-gray-800 hover:bg-gray-300"
           >
@@ -14,12 +14,30 @@
               <i class="fa-regular fa-calendar-plus mx-1"></i>
               Tạo đề
             </div>
-            <!-- <CreateExamExe v-if="showDropdownCreate" /> -->
+            <i
+              class="fas fa-plus cursor-pointer"
+              :class="{ 'rotate-45': isMenuOpen.Create }"
+            ></i>
+          </div>
+          <div v-if="isMenuOpen.Create" class="text-gray-800">
+            <ul>
+              <li
+                @click="openModalAddExam"
+                class="flex justify-between p-2 cursor-pointer hover:bg-gray-300 shadow-sm"
+              >
+                Tạo Đề thi
+              </li>
+              <li
+                @click="openModalAddExercise"
+                class="flex justify-between p-2 cursor-pointer hover:bg-gray-300 shadow-sm"
+              >
+                Tạo Bài tập
+              </li>
+            </ul>
           </div>
         </li>
         <li class="group border-b border-gray-200">
           <div
-            @click="toggleMenuDT"
             class="flex items-center justify-between p-3 rounded transition duration-300 cursor-pointer text-gray-800 hover:bg-gray-300"
           >
             <div>
@@ -27,47 +45,66 @@
 
               Đề thi
             </div>
-            <i
-              class="fas fa-plus cursor-pointer"
-              :class="{ 'rotate-45': isMenuOpen.DT }"
-            ></i>
+          </div>
+          <div class="text-gray-800">
+            <ul>
+              <li
+                @click="toggleMenuDT(item)"
+                v-for="item in listGrade"
+                :key="item.id"
+                class="flex justify-between p-2 cursor-pointer hover:bg-gray-300 shadow-sm"
+              >
+                {{ item.name }}
+              </li>
+            </ul>
           </div>
           <div v-if="isMenuOpen.DT" class="ml-4 text-gray-800">
             <ul>
               <li
-                @click="goToCategory(item)"
-                v-for="item in listGrade"
+                @click="goToCategoryExam(item)"
+                v-for="item in listCategory"
                 :key="item.id"
                 class="block p-2 cursor-pointer hover:bg-gray-300 shadow-sm"
               >
-                {{ item.name }}
+                {{ item.title }}
               </li>
             </ul>
           </div>
         </li>
         <li class="border-gray-300">
           <div
-            @click="toggleMenuBT"
             class="flex items-center justify-between p-3 rounded transition duration-300 cursor-pointer text-gray-800 hover:bg-gray-300"
           >
             <div>
               <i class="fa-solid fa-book text-gray-800 mx-1"></i>
               Bài tập
             </div>
-            <i
-              class="fas fa-plus cursor-pointer"
-              :class="{ 'rotate-45': isMenuOpen.BT }"
-            ></i>
+          </div>
+          <div class="text-gray-800">
+            <ul>
+              <li
+                @click="toggleMenuBT(item)"
+                v-for="item in listGrade"
+                :key="item.id"
+                class="flex justify-between p-2 cursor-pointer hover:bg-gray-300 shadow-sm"
+              >
+                {{ item.name }}
+                <!-- <i
+                  class="fas fa-plus cursor-pointer"
+                  :class="{ 'rotate-45': isMenuOpen.BT }"
+                ></i> -->
+              </li>
+            </ul>
           </div>
           <div v-if="isMenuOpen.BT" class="ml-4 text-gray-800">
             <ul>
               <li
-                @click="goToCategory(item)"
-                v-for="item in listGrade"
+                @click="goToCategoryExercise(item)"
+                v-for="item in listCategory"
                 :key="item.id"
                 class="block p-2 cursor-pointer hover:bg-gray-300 shadow-sm"
               >
-                {{ item.name }}
+                {{ item.title }}
               </li>
             </ul>
           </div>
@@ -85,9 +122,11 @@ export default {
   data() {
     return {
       isMenuOpen: {
-        DT: true,
-        BT: true,
+        Create: false,
+        DT: false,
+        BT: false,
       },
+      showDropdownCreate: false,
     }
   },
   computed: {
@@ -104,25 +143,40 @@ export default {
     ...mapActions('category', ['getCategory']),
     ...mapActions('users', ['getInfoUser']),
 
-    async goToCategory(nameGrade) {
-      await this.getCategory(nameGrade.slug)
-      // this.$router.go(0)
+    goToCategoryExam(category) {
       this.$router.push({
-        path: '/category-exams',
+        path: `/category-exams/${category.slug}`,
         query: {
-          listCategory: JSON.stringify(this.listCategory),
-          nameGrade: nameGrade.name,
+          slugCategory: category.slug,
+          nameCategory: category.title,
         },
       })
     },
-    toggleMenuDT() {
-      this.isMenuOpen.DT = !this.isMenuOpen.DT
+    goToCategoryExercise(category) {
+      this.$router.push({
+        path: `/category-exercise/${category.slug}`,
+        query: {
+          slugCategory: category.slug,
+          nameCategory: category.title,
+        },
+      })
     },
-    toggleMenuBT() {
+    async toggleMenuDT(item) {
+      this.isMenuOpen.DT = !this.isMenuOpen.DT
+      await this.getCategory(item.slug)
+    },
+    async toggleMenuBT(item) {
       this.isMenuOpen.BT = !this.isMenuOpen.BT
+      await this.getCategory(item.slug)
+    },
+    openDownCreate() {
+      this.isMenuOpen.Create = !this.isMenuOpen.Create
     },
     openModalAddExam() {
-      this.$emit('add-click')
+      this.$emit('add-exam-click')
+    },
+    openModalAddExercise() {
+      this.$emit('add-exercise-click')
     },
   },
 }

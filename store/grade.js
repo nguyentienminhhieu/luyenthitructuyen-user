@@ -10,8 +10,7 @@ export const state = () => ({
 export const actions = {
   async getGrade({ commit }) {
     try {
-      const config = getAuthorizationConfig()
-      const response = await this.$axios.get('/list-grades', config)
+      const response = await this.$axios.get('/list-grades')
       const data = response.data
       commit('SET_GRADE', data.data)
       // console.log(data.data)
@@ -22,7 +21,7 @@ export const actions = {
   // async getDetailGrade({ commit }, id) {
   //   try {
   //     const config = getAuthorizationConfig()
-  //     const response = await this.$axios.get('admin/grade/' + id, config)
+  //     const response = await this.$axios.get('admin/grade/' + id)
   //     const data = response.data
   //     commit('SET_DETAIL_GRADE', data.data)
   //     // console.log(data.data)
@@ -33,7 +32,7 @@ export const actions = {
   // async addGrade({ commit }, payload) {
   //   try {
   //     const config = getAuthorizationConfig()
-  //     const response = await this.$axios.post('admin/grade', payload, config)
+  //     const response = await this.$axios.post('admin/grade', payload)
   //     const data = response.data
   //     commit('ADD_GRADE', data.data)
   //   } catch (error) {
@@ -58,7 +57,7 @@ export const actions = {
   //   try {
   //     const config = getAuthorizationConfig()
 
-  //     await this.$axios.delete(`admin/grade/${gradeId}`, config)
+  //     await this.$axios.delete(`admin/grade/${gradeId}`)
   //     commit('DELETE_GRADE', gradeId)
   //   } catch (error) {
   //     console.error('Error deleting grade:', error)

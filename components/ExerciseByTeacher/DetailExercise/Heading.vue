@@ -6,13 +6,13 @@
     >
     <p>/</p>
     <nuxt-link
-      to="/admin/exams"
+      to="/admin/exercise"
       class="text-color-custom hover:text-color-custom"
-      >Exams</nuxt-link
+      >Exercise</nuxt-link
     >
     <p>/</p>
     <nuxt-link
-      :to="'/admin/exams/' + $route.params.id"
+      :to="'/admin/exercise/' + $route.params.id"
       class="text-color-custom hover:text-color-custom"
       >{{ $route.params.id }}</nuxt-link
     >
@@ -20,7 +20,7 @@
 </template>
 <script>
 export default {
-  name: 'HeadingDetailExam',
+  name: 'HeadingDetailExercise',
   methods: {
     validate({ params }) {
       // Must be a string of letters

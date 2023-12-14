@@ -21,17 +21,16 @@ export const actions = {
   getUser({ commit }, data) {
     commit('setInfoUser', data)
   },
-  //   async getDetailSubjects({ commit }, id) {
-  //     try {
-  //       const config = getAuthorizationConfig()
-  //       const response = await this.$axios.get('admin/subject/' + id, config)
-  //       const data = response.data
-  //       commit('SET_DETAIL_SUBJECT', data.data)
-  //       // console.log(data.data)
-  //     } catch (error) {
-  //       console.log('Loi sever, ', error)
-  //     }
-  //   },
+  async updateUser({ commit }, payload) {
+    try {
+      const config = getAuthorizationConfig()
+      const response = await this.$axios.put('/update-user', payload, config)
+      const data = response.data
+      commit('SET_UPDATE_USER', data.data)
+    } catch (error) {
+      console.log('Loi sever, ', error)
+    }
+  },
   //   async addSubjects({ commit }, payload) {
   //     try {
   //       const config = getAuthorizationConfig()
@@ -77,9 +76,9 @@ export const mutations = {
   setInfoUser(state, data) {
     state.user = data
   },
-  //   SET_DETAIL_SUBJECT(state, subject) {
-  //     state.detailSubject = subject
-  //   },
+  SET_UPDATE_USER(state, data) {
+    state.user = data
+  },
   //   ADD_SUBJECT(state, subject) {
   //     state.listSubject.push(subject)
   //   },
