@@ -1,13 +1,17 @@
 <template>
   <div
-    v-if="slugExam"
+    v-if="slugExam && idExam"
     class="flex flex-col justify-center items-center mx-5 h-screen"
   >
     <div
-      class="text-[#585858] border-b border-black max-h-[450px] max-w-[600px] p-4"
+      class="text-[#585858] border-b border-black max-h-[500px] max-w-[600px] p-4"
     >
       <div class="text-center">
         <h2 class="text-2xl font-bold">Hướng dẫn làm bài kiểm tra</h2>
+        <p class="my-4">
+          <strong><i class="fa-solid fa-users"></i> Lượt thi: </strong
+          >{{ listExamDone.length }}
+        </p>
       </div>
       <div class="text-xl font-bold text-center my-4">
         Chủ đề: {{ detailExam.title }}
@@ -65,10 +69,12 @@ export default {
   data() {
     return {
       slugExam: '',
+      idExam: null,
     }
   },
   computed: {
     ...mapState('exam', ['detailExam']),
+    ...mapState('exam', ['listExamDone']),
   },
   created() {},
   mounted() {
@@ -76,9 +82,15 @@ export default {
       this.slugExam = this.$route.query.slugExam
       this.getExamBySlug(this.slugExam)
     }
+    if (this.$route.query.idExam) {
+      this.idExam = this.$route.query.idExam
+      this.getExamByDoneUser(this.idExam)
+    }
   },
   methods: {
     ...mapActions('exam', ['getExamBySlug']),
+    ...mapActions('exam', ['getExamByDoneUser']),
+
     goToExam(slugExam) {
       this.$router.push({
         path: `/exam/${slugExam}`,

@@ -3,6 +3,23 @@
     <nav
       class="fixed top-5 right-[-15px] shadow-lg w-64 h-screen overflow-y-auto bg-white"
     >
+      <div class="avatar-user flex items-center m-4">
+        <div class="relative cursor-pointer" @click="toggleAccountMenu">
+          <i
+            v-if="user.avatar === null"
+            class="fas fa-user-circle text-border-default hover:text-border-default"
+          ></i>
+          <img
+            v-else
+            :src="user.avatar"
+            alt="avatar Image"
+            class="w-8 h-8 z-10 rounded-full opacity-1 hover:opacity-75"
+          />
+        </div>
+        <div class="text-border-default" @click="closeModal">
+          <AccountMenu v-if="isMenuAccount" />
+        </div>
+      </div>
       <ul class="p-0 m-0">
         <li class="group border-b border-gray-200">
           <div
@@ -116,9 +133,13 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import AccountMenu from '~/components/common/AccountMenu'
 
 export default {
   name: 'MenuBars',
+  components: {
+    AccountMenu,
+  },
   data() {
     return {
       isMenuOpen: {
@@ -126,6 +147,7 @@ export default {
         DT: false,
         BT: false,
       },
+      isMenuAccount: false,
       showDropdownCreate: false,
     }
   },
@@ -178,11 +200,22 @@ export default {
     openModalAddExercise() {
       this.$emit('add-exercise-click')
     },
+    toggleAccountMenu() {
+      this.isMenuAccount = !this.isMenuAccount
+    },
+    closeModal() {
+      this.isMenuAccount = false
+    },
   },
 }
 </script>
 <style scoped>
 nav {
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+}
+@media (max-width: 600px) {
+  .avatar-user {
+    display: block;
+  }
 }
 </style>

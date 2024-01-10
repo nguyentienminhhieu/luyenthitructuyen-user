@@ -47,44 +47,8 @@
           </div>
         </div>
 
-        <!-- Số điện thoại -->
-        <!-- <div class="mb-4 md:mb-0">
-          <label for="phone" class="block text-color-default"
-            >Số điện thoại</label
-          >
-          <input
-            id="phone"
-            v-model.trim="ruleForm.phone"
-            type="text"
-            name="phone"
-            class="w-full border-b-2 focus:outline-none p-1"
-            :class="[
-              !$v.ruleForm.phone.$dirty
-                ? ''
-                : checkStatusClass($v.ruleForm.phone)
-                ? 'border-input-error'
-                : '',
-            ]"
-            @blur="$v.ruleForm.phone.$touch()"
-          />
-          <div
-            v-if="checkStatusClass($v.ruleForm.phone)"
-            class="text-input-error text-sm"
-          >
-            <span :style="{ width: '90%' }">
-              {{
-                !$v.ruleForm.phone.required
-                  ? 'Vui lòng nhập dữ liệu!'
-                  : !$v.ruleForm.phone.mustPhomeNumber
-                  ? 'Vui lòng nhập đúng định dạng sodienthoai!'
-                  : ''
-              }}
-            </span>
-          </div>
-        </div> -->
-
         <!-- Email -->
-        <div class="my-6 md:mb-0">
+        <!-- <div class="my-6 md:mb-0">
           <label for="email" class="block text-color-default">Email</label>
           <input
             id="email"
@@ -115,7 +79,7 @@
               }}
             </span>
           </div>
-        </div>
+        </div> -->
 
         <!-- Roles (mặc định là Giáo viên và không được sửa) -->
         <!-- <div class="mb-4 md:mb-0">
@@ -217,7 +181,7 @@
             type="submit"
             class="px-4 py-2 bg-[#273c75] hover:bg-[#31447b] text-white rounded-md"
           >
-            Change
+            Sửa
           </button>
         </div>
       </form>
@@ -257,7 +221,7 @@ export default {
         address: '',
         school: '',
         // roles: null,
-        phone: '',
+        phone: '0969',
         class: '',
       },
       showSuccessToast: false,
@@ -320,7 +284,7 @@ export default {
           name: this.ruleForm.username,
           address: this.ruleForm.address,
           school: this.ruleForm.school,
-          phone: this.detailUser.phone,
+          phone: this.ruleForm.phone,
           avatar: this.detailUser.avatar,
           grade_id: this.ruleForm.grade_id,
         }

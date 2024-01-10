@@ -47,12 +47,13 @@ export default {
     showModal: Boolean,
     examId: Number,
     exerciseId: Number,
+    idComment: Number,
   },
   data() {
     return {
       showSuccessToast: false,
       showErrorToast: false,
-      successMessage: 'Xoá môn học thành công!.',
+      successMessage: 'Xoá thành công!.',
       errorMessage: 'Lỗi! Không được xóa.',
     }
   },
@@ -70,7 +71,14 @@ export default {
             this.exerciseId
           )
         }
+        // else if (this.idComment) {
+        //   this.$store.dispatch('commentExam/deleteComment', this.idComment)
+        // }
         this.closeModal()
+        this.showSuccessToast = true
+        setTimeout(() => {
+          this.showSuccessToast = false
+        }, 3000)
       } catch (error) {
         this.showErrorToast = true
         setTimeout(() => {

@@ -21,7 +21,7 @@
 </template>
 <script>
 export default {
-  // layout: false,
+  layout: false,
   name: 'ErrorLayout',
 }
 </script>

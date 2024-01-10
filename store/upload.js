@@ -2,7 +2,7 @@ import { getField, updateField } from 'vuex-map-fields'
 import { getAuthorizationConfig } from '~/plugins/configToken'
 
 export const state = () => ({
-  fileUpload: [],
+  fileUpload: {}
 })
 
 export const actions = {

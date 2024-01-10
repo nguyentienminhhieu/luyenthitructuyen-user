@@ -3,7 +3,7 @@
     v-if="showModal"
     class="fixed inset-0 flex items-center justify-center z-50"
   >
-    <div class="fixed inset-0 bg-black opacity-60" @click="closeModal"></div>
+    <div class="fixed inset-0 bg-black opacity-60"></div>
     <div
       class="container-1 w-[400px] bg-white p-6 rounded-lg shadow-lg z-50 max-w-screen-md max-h-screen-md"
     >
@@ -15,6 +15,7 @@
       <div class="btn-confirm mt-6 text-[#ffff] flex justify-between">
         <div class="lg:my-0 mb-6">
           <button
+            @click="closeModal"
             class="btn-confirm-1 px-5 py-2 bg-[#7e7e7e] hover:bg-[#9d9d9d] text-white rounded-md mr-4"
           >
             Làm tiếp

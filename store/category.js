@@ -15,12 +15,13 @@ export const actions = {
         '/list-categories',
         {
           params: {
+            limit: 40,
             grade_slug: gradeSlug,
           },
         },
         config
       )
-      const data = response.data
+      const data = response.data?.data
       commit('SET_CATEGORY', data.data)
     } catch (error) {
       console.log('Loi sever, ', error)

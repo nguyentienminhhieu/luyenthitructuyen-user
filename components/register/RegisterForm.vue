@@ -240,7 +240,7 @@
         <!-- Hàng 3: roles, Trường, Địa Chỉ -->
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label for="roles" class="block text-color-default">Roles</label>
+            <label for="roles" class="block text-color-default">Vai trò</label>
             <!-- <input
               type="text"
               id="roles"
@@ -354,7 +354,6 @@ export default {
     ToastError,
   },
   layout: 'authLayout',
-  //   auth: 'guest',
   data() {
     return {
       ruleForm: {
@@ -371,8 +370,8 @@ export default {
       isPasswordVisible: false,
       showSuccessToast: false,
       showErrorToast: false,
-      successMessage: 'Đăng ký thành công!.',
-      errorMessage: 'Lỗi! Sai cái gì đó.',
+      successMessage: 'Đăng ký thành công! Vào email để xác thực.',
+      errorMessage: 'Lỗi! Sai email.',
     }
   },
   validations: {
@@ -446,10 +445,17 @@ export default {
           }
           this.reset()
           await this.register(payload)
-          this.showSuccessToast = true
-          setTimeout(() => {
-            this.showSuccessToast = false
-          }, 3000)
+          if (!error) {
+            this.showSuccessToast = true
+            setTimeout(() => {
+              this.showSuccessToast = false
+            }, 5000)
+          } else {
+            this.showErrorToast = true
+            setTimeout(() => {
+              this.showErrorToast = false
+            }, 3000)
+          }
         } catch (error) {
           this.showErrorToast = true
           setTimeout(() => {

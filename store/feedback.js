@@ -3,7 +3,7 @@ import { getAuthorizationConfig } from '~/plugins/configToken'
 // import Cookies from '~/services/cookies.service.js'
 
 export const state = () => ({
-  commentExam: "",
+  commentExam: '',
   detailGrade: null,
 })
 
@@ -32,7 +32,7 @@ export const actions = {
     try {
       const config = getAuthorizationConfig()
       const response = await this.$axios.post('/grade', payload, config)
-      const data = response.data
+      const data = response.data?.data
       commit('ADD_GRADE', data.data)
     } catch (error) {
       console.log('Loi sever, ', error)

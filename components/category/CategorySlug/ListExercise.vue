@@ -1,7 +1,7 @@
 <template>
   <div class="container-all grid grid-cols-1 gap-4 p-4 m-6 mx-24">
     <div
-      v-for="(exercise, index) in exercises"
+      v-for="(exercise, index) in listExercise"
       :key="index"
       class="bg-white shadow-md p-4 my-4 hover:bg-[#81818122] rounded-xl cursor-pointer"
       @click="goToIntructions(exercise.slug)"
@@ -30,11 +30,11 @@
         </div>
       </div>
     </div>
-    <div class="flex items-center space-x-2 my-5">
+    <div v-if="totalPages > 1" class="flex items-center space-x-2 mt-8">
       <button
         class="bg-[#f4f4f5] text-[#7d7d7d] py-2 px-3 rounded-md"
+        :disabled="currentPageNumber === 1"
         @click="goToPrevPage"
-        :disabled="currentPage === 1"
       >
         <i class="fa-solid fa-angle-left"></i>
       </button>
@@ -42,17 +42,20 @@
         <li
           v-for="page in totalPages"
           :key="page"
-          :class="['number', { active: currentPage === page }]"
-          @click="goToPage(page)"
+          :class="{
+            active:
+              currentPageNumber === page || (!currentPageNumber && page === 1),
+          }"
           class="font-medium py-2 px-3 bg-[#f4f4f5] text-[#7d7d7d] hover:bg-[#3958ad] hover:text-[#fff] rounded-lg cursor-pointer"
+          @click="goToPage(page)"
         >
           {{ page }}
         </li>
       </ul>
       <button
         class="bg-[#f4f4f5] text-[#7d7d7d] py-2 px-3 rounded-md"
+        :disabled="currentPageNumber === totalPages"
         @click="goToNextPage"
-        :disabled="currentPage === totalPages"
       >
         <i class="fa-solid fa-angle-right"></i>
       </button>
@@ -70,33 +73,30 @@ export default {
   data() {
     return {
       exercises: [],
-      currentPage: 1,
-      itemsPerPage: 6,
+      currentPageNumber: this.currentPage,
     }
   },
   computed: {
-    totalPages() {
-      return Math.ceil(this.listExercise.length / this.itemsPerPage)
-    },
     ...mapState('exercise', ['listExercise']),
+    ...mapState('exercise', ['currentPage ']),
+    ...mapState('exercise', ['totalPages']),
+    ...mapState('exercise', ['itemsPerPage']),
+    ...mapState('exercise', ['totalItems']),
+  },
+  watch: {
+    currentPageNumber(newPageNumber) {
+      localStorage.setItem('currentPageNumberExercise', newPageNumber)
+    },
   },
   async mounted() {
-    // this.$router.go(0)
-    await this.getListExerciseCategory(this.slugCategory)
-    this.exercises = this.listExercise
+    this.currentPageNumber =
+      parseInt(localStorage.getItem('currentPageNumberExercise')) || 1
+
+    await this.getListExercise()
   },
+
   methods: {
     ...mapActions('exercise', ['getListExerciseCategory']),
-    goToNextPage() {
-      if (this.currentPage < this.totalPages) {
-        this.currentPage++
-      }
-    },
-    goToPrevPage() {
-      if (this.currentPage > 1) {
-        this.currentPage--
-      }
-    },
     goToIntructions(slugExercise) {
       this.$router.push({
         path: '/exercise/intructions',
@@ -105,10 +105,61 @@ export default {
         },
       })
     },
+    async getListExercise() {
+      const payload = {
+        slug: this.slugCategory,
+        limit: '6',
+        page: this.currentPageNumber,
+      }
+      try {
+        await this.$store.dispatch('exercise/getListExerciseCategory', payload)
+      } catch (error) {
+        console.error('Lỗi khi lấy dữ liệu:', error)
+      }
+    },
+    async goToNextPage() {
+      if (this.currentPageNumber < this.totalPages) {
+        this.currentPageNumber++
+        const payload = {
+          slug: this.slugCategory,
+          limit: '6',
+          page: this.currentPageNumber,
+        }
+        await this.$store.dispatch('exercise/getListExerciseCategory', payload)
+      }
+    },
+    async goToPrevPage() {
+      if (this.currentPageNumber > 1) {
+        this.currentPageNumber--
+        const payload = {
+          slug: this.slugCategory,
+          limit: '6',
+          page: this.currentPageNumber,
+        }
+        await this.$store.dispatch('exercise/getListExerciseCategory', payload)
+      }
+    },
+    async goToPage(pageNumber) {
+      this.currentPageNumber = pageNumber
+      const payload = {
+        slug: this.slugCategory,
+        limit: '6',
+        page: this.currentPageNumber,
+      }
+      await this.$store.dispatch('exercise/getListExerciseCategory', payload)
+    },
   },
 }
 </script>
 <style scoped>
+.active {
+  background-color: #3958ad;
+  color: #ffff;
+}
+.disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
 @media (min-width: 375px) and (max-width: 899px) {
   .img-exercise {
     width: 100%;

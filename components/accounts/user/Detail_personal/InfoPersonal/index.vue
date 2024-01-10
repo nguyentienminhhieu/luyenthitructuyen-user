@@ -1,24 +1,25 @@
 <template>
-  <div class="container mx-auto p-8 border-b-2">
+  <div class="container py-8 border-b-2 w-[100%] mx-auto">
     <div class="flex justify-between my-8">
       <h2 class="text-lg font-semibold text-[#273c75]">Thông tin cá nhân</h2>
-      <div>
+    </div>
+
+    <div class="info grid grid-cols-1 gap-3 w-[50%] mx-10">
+      <div class="flex justify-end">
         <i
           class="fas fa-edit text-gray-500 hover:text-gray-700 cursor-pointer"
           @click="editStudent(user)"
         ></i>
       </div>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 space-y-6">
       <div
         v-for="(field, label) in userFields"
         :key="label"
-        class="bg-white shadow-lg rounded-lg overflow-hidden"
+        class="bg-white shadow-md overflow-hidden text-lg p-4"
       >
-        <label class="font-semibold ml-2">{{ label }}:</label>
-        <span v-if="label === 'Class'">{{ userClass }}</span>
-        <span v-else>{{ field }}</span>
+        <div class="flex items-start">
+          <label class="font-semibold mr-4">{{ label }}:</label>
+          <span>{{ label === 'Class' ? userClass : field }}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -42,7 +43,6 @@ export default {
       }
     },
     userClass() {
-      // Sử dụng switch để chuyển đổi grade_id thành lớp tương ứng
       switch (this.user.grade_id) {
         case 1:
           return 'Lớp 6'
@@ -74,7 +74,6 @@ export default {
           return 'Học Sinh'
         case 2:
           return 'Giáo viên'
-        // Thêm các vai trò khác ở đây nếu cần
         default:
           return 'Null'
       }
@@ -85,7 +84,8 @@ export default {
 <style scoped>
 @media (min-width: 375px) and (max-width: 899px) {
   .info {
-    flex-direction: column;
+    width: 100%;
+    margin: 0 25px;
   }
   .info-1 {
     flex-direction: column;

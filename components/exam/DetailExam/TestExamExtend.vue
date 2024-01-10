@@ -86,7 +86,7 @@
   </div>
 </template>
 <script>
-import { EventBus } from './IntroductionExam.vue'
+// import { EventBus } from './IntroductionExam.vue'
 export default {
   name: 'TestExamExtend',
   props: {
@@ -165,7 +165,7 @@ export default {
   },
   mounted() {
     // console.log('extend')
-    EventBus.$on('go-to-question', this.handleGoToQuestion)
+    // EventBus.$on('go-to-question', this.handleGoToQuestion)
   },
   methods: {
     handleGoToQuestion(index) {

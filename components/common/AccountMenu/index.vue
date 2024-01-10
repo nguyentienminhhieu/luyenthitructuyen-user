@@ -30,9 +30,11 @@ import { mapActions, mapState } from 'vuex'
 import Cookies from '@/services/cookies.service.js'
 export default {
   name: 'AccountMenu',
+
   data() {
     return {
       isLoggin: false,
+
       //   cookieExists: false,
     }
   },
@@ -86,6 +88,12 @@ export default {
 @media (min-width: 375px) and (max-width: 899px) {
   .container-all {
     right: 1rem;
+  }
+}
+@media (max-width: 600px) {
+  .container-all {
+    left: 0;
+    width: 256px;
   }
 }
 </style>

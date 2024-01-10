@@ -5,10 +5,13 @@
   >
     <div class="fixed inset-0 bg-black opacity-60" @click="closeModal"></div>
     <div
-      class="bg-white p-6 rounded-lg shadow-lg z-50 w-[400px] h-[500px] overflow-auto"
+      class="bg-white p-6 rounded-lg shadow-lg z-50 w-[600px] h-[550px] overflow-auto"
     >
-      <h2 class="text-center text-xl font-semibold mb-10">Thêm bài tập</h2>
-      <form class="flex flex-col" @submit.prevent="submitForm">
+      <h2 class="text-center text-xl font-semibold">Thêm bài tập</h2>
+      <p class="text-center m-5 text-gray-500 text-base underline">
+        *Bạn được tạo tối đa 10 bài tập
+      </p>
+      <form class="flex flex-col mt-10" @submit.prevent="submitForm">
         <div class="mb-4">
           <label for="exerciseName" class="block text-color-default"
             >Tên bài tập</label
@@ -49,7 +52,7 @@
           <textarea
             id="exerciseDescription"
             v-model="ruleForm.exerciseDescription"
-            class="mt-1 p-2 block w-full h-40 rounded-md focus:outline-none border border-gray-300"
+            class="mt-1 p-2 block w-full h-20 rounded-md focus:outline-none border border-gray-300"
           ></textarea>
         </div>
 
@@ -172,6 +175,8 @@ export default {
         exerciseName: '',
         exerciseDescription: '',
         slug: '',
+        max_score: '',
+        duration: '',
         category: null,
       },
       selectedImage: null,
@@ -223,8 +228,8 @@ export default {
             slug: this.ruleForm.slug,
             description: this.ruleForm.exerciseDescription,
             category_id: this.ruleForm.category,
-            max_score: '',
-            duration: '',
+            max_score: this.ruleForm.max_score,
+            duration: this.ruleForm.duration,
             url_img: this.selectedImage,
           }
           if (this.addExercise(payload)) {
@@ -262,18 +267,10 @@ export default {
           formData.append('image', file)
           await this.uploadFile(formData)
 
-          // console.log('id: ', this.fileUpload)
-          if (this.fileUpload) {
+          if (typeof this.fileUpload === 'object') {
             try {
-              // Sử dụng biểu thức chính quy để trích xuất giá trị "url"
-              const match = /"url":\s*"([^"]+)"/.exec(this.fileUpload)
-
-              // Kiểm tra xem có sự trùng khớp và lấy giá trị "url"
-              if (match && match[1]) {
-                const url = match[1]
-                // eslint-disable-next-line vue/no-mutating-props
-                this.selectedImage = url.replaceAll('\\', '')
-                // eslint-disable-next-line vue/no-mutating-props
+              if (this.fileUpload && this.fileUpload.url) {
+                this.selectedImage = this.fileUpload.url
               } else {
                 console.log('Không tìm thấy giá trị URL.')
               }

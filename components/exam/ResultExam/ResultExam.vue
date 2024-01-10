@@ -5,8 +5,12 @@
         {{ reviewExam.title }}
       </h1>
       <div class="flex justify-around my-6">
-        <p class="text-[#5d5d5d]">Môn thi: ...</p>
-        <p class="text-[#5d5d5d]">Lớp: ...</p>
+        <p class="text-[#5d5d5d]">
+          Môn thi: {{ reviewExam.category?.subject?.name }}
+        </p>
+        <p class="text-[#5d5d5d]">
+          Lớp: {{ reviewExam.category?.grade?.name }}
+        </p>
       </div>
       <div class="">
         <ul>
@@ -80,6 +84,7 @@ export default {
   name: 'ResultExam',
   props: {
     reviewExam: Object,
+    categoryExam: Object,
   },
   data() {
     return {}

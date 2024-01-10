@@ -20,7 +20,7 @@
           </div>
           <div class="flex flex-col items-center">
             <h2>Điểm số</h2>
-            <h2>{{ takeExams.total_score }}</h2>
+            <h2>{{ takeExams.total_score }} / 100</h2>
           </div>
         </div>
       </div>
@@ -59,7 +59,6 @@ export default {
   },
   computed: {
     totalQuestions() {
-      // Tính toán tổng số câu hỏi
       return this.detailExam.questions.length
     },
   },

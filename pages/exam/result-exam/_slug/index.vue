@@ -1,15 +1,29 @@
 <template>
-  <div>
+  <div v-if="idExam">
     <div class="header-exam hidden sticky" style="top: 0">
-      <HeaderResultExam :review-exam="reviewExam" />
+      <HeaderResultExam
+        :review-exam="reviewExam"
+        :total-score="totalScore"
+        :id-exam="idExam"
+        :comments-exam="commentsExam"
+      />
     </div>
     <div class="container-1 bg-[#e5e5e5] w-full flex flex-row py-10">
       <div class="test-exam w-[60%] mx-10">
         <!-- <TestExamExtend :detail-exam="reviewExam" /> -->
-        <ResultExam :review-exam="reviewExam" />
+        <ResultExam
+          :review-exam="reviewExam"
+          :category-exam="categoryResultExam"
+        />
       </div>
       <div class="introduction-exam w-[10%] mr-6">
-        <IntroductionExam :review-exam="reviewExam" :total-score="totalScore" />
+        <IntroductionExam
+          :review-exam="reviewExam"
+          :total-score="totalScore"
+          :id-exam="idExam"
+          :comments-exam="commentsExam"
+          :success-questions="successQuestions"
+        />
       </div>
     </div>
   </div>
@@ -30,8 +44,12 @@ export default {
   data() {
     return {
       idExam: '',
+      idReviewExam: '',
       reviewExam: {},
       totalScore: null,
+      commentsExam: null,
+      categoryResultExam: null,
+      successQuestions: null,
     }
   },
   computed: {
@@ -44,6 +62,9 @@ export default {
     await this.getReviewExam(this.idExam)
     this.reviewExam = this.detailExam.take_exam
     this.totalScore = this.detailExam.total_score
+    this.categoryResultExam = this.detailExam.category
+    this.commentsExam = this.detailExam.comments
+    this.successQuestions = this.detailExam.total_question_success
   },
   methods: {
     ...mapActions('exam', ['getReviewExam']),

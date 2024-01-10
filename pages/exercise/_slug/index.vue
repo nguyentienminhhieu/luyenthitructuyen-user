@@ -8,16 +8,13 @@
       />
     </div>
 
-    <div class="container-1 bg-[#e5e5e5] w-full flex flex-row py-10">
-      <!-- <div v-if="!ExamQuestionsExtends" class="test-exam w-[60%] mx-10">
-      </div> -->
+    <TestExercise
+      :detail-exercise="detailExercise"
+      @answer-selected="handleAnswerSelected"
+      @out-clicked="showOutModal = true"
+    />
+    <!-- <div class="container-1 bg-[#e5e5e5] w-full flex flex-row py-10">
       <div class="test-exam w-[60%] mx-10">
-        <!-- <TestExamExtend :detail-exercise="detailExercise" /> -->
-        <TestExercise
-          :detail-exercise="detailExercise"
-          @answer-selected="handleAnswerSelected"
-          @out-clicked="showOutModal = true"
-        />
       </div>
       <div class="introduction-exam w-[10%] mr-6">
         <IntroductionExercise
@@ -26,7 +23,7 @@
           @out-clicked="outClicked"
         />
       </div>
-    </div>
+    </div> -->
     <ModalOutExam :show-modal="showOutModal" @close="showOutModal = false" />
   </div>
 </template>
@@ -95,19 +92,5 @@ export default {
 </script>
 <style scoped>
 @media (min-width: 375px) and (max-width: 899px) {
-  .container-1 {
-    width: 100%;
-  }
-  .test-exam {
-    width: 100%;
-    margin: 0 10px;
-  }
-  .introduction-exam {
-    display: none;
-  }
-  .header-exam {
-    display: block;
-    /* margin: 10px; */
-  }
 }
 </style>

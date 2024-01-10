@@ -7,7 +7,9 @@ export default function ({ route, redirect }) {
     if (
       route.path !== '/login' &&
       route.path !== '/register' &&
-      route.path !== '/forgot-password'
+      route.path !== '/forgot-password' &&
+      !route.path.includes('/verify-email/') &&
+      !route.path.includes('/reset-password/')
     ) {
       return redirect('/login')
     }
@@ -15,6 +17,9 @@ export default function ({ route, redirect }) {
     route.path === '/login' ||
     route.path === '/register' ||
     route.path === '/forgot-password'
+    // ||
+    // route.path.include('/verify-email/') ||
+    // route.path.include('/reset-password/')
   ) {
     return redirect('/admin')
   }

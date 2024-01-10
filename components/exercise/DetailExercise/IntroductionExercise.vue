@@ -34,7 +34,7 @@
 <script>
 import { mapActions } from 'vuex'
 import Vue from 'vue'
-export const EventBus = new Vue()
+// export const EventBus = new Vue()
 export default {
   name: 'IntroductionExercise',
   props: {
@@ -70,9 +70,9 @@ export default {
     handleOut() {
       this.$emit('out-clicked')
     },
-    goToQuestion(index) {
-      EventBus.$emit('go-to-question', index)
-    },
+    // goToQuestion(index) {
+    //   EventBus.$emit('go-to-question', index)
+    // },
   },
   beforeDestroy() {
     clearInterval(this.countdownInterval)

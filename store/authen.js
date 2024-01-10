@@ -1,3 +1,4 @@
+import { getAuthorizationConfig } from '~/plugins/configToken'
 import Cookies from '~/services/cookies.service.js'
 
 export const state = () => ({
@@ -23,6 +24,52 @@ export const actions = {
     }
   },
 
+  async changePassword({ commit }, payload) {
+    try {
+      const config = getAuthorizationConfig()
+      const response = await this.$axios.post(
+        '/change-password',
+        payload,
+        config
+      )
+      return response
+      // const data = response.data
+      // commit('SET_SUBMIT_EXAM', data.data)
+    } catch (error) {
+      // return error
+      console.log('loi', error)
+    }
+  },
+  async forgotPassword({ commit }, payload) {
+    try {
+      // const config = getAuthorizationConfig()
+      const response = await this.$axios.post('/forgot-password', payload)
+      return response
+      // const data = response.data
+      // commit('SET_SUBMIT_EXAM', data.data)
+    } catch {}
+  },
+  async resetPassword({ commit }, payload) {
+    try {
+      // const config = getAuthorizationConfig()
+      const response = await this.$axios.post('/reset-password', payload)
+      return response
+      // const data = response.data
+      // commit('SET_SUBMIT_EXAM', data.data)
+    } catch (error) {
+      // return error
+      console.log('loi', error)
+    }
+  },
+  async verifyEmail({ commit }, payload) {
+    try {
+      // const config = getAuthorizationConfig()
+      const response = await this.$axios.post('/verify-email', payload)
+      return response
+      // const data = response.data
+      // commit('SET_SUBMIT_EXAM', data.data)
+    } catch {}
+  },
   async login({ commit }, payload) {
     try {
       const response = await this.$axios.post('/login', payload)

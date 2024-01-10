@@ -8,11 +8,17 @@
       />
     </div>
 
-    <div class="container-1 bg-[#e5e5e5] w-full flex flex-row py-10">
-      <!-- <div v-if="!ExamQuestionsExtends" class="test-exam w-[60%] mx-10">
-      </div> -->
+    <TestExam
+      :detail-exam="detailExam"
+      @answer-selected="handleAnswerSelected"
+      @out-clicked="showOutModal = true"
+      @send-clicked="sendClicked"
+      @send-payload="handleSendPayload"
+      @timeout-clicked="showTimeOutModal = true"
+      @payload-emitted="handlePayload"
+    />
+    <!-- <div class="container-1 bg-[#e5e5e5] w-full flex flex-row py-10">
       <div class="test-exam w-[60%] mx-10">
-        <!-- <TestExamExtend :detail-exam="detailExam" /> -->
         <TestExam
           :detail-exam="detailExam"
           @answer-selected="handleAnswerSelected"
@@ -29,7 +35,7 @@
           @send-clicked="sendClicked"
         />
       </div>
-    </div>
+    </div> -->
     <ModalSendExam
       :show-modal="showSendModal"
       :payload="submissionPayload"
@@ -44,6 +50,13 @@
       :detailExam="detailExam"
       @close="showResultModal = false"
     />
+    <ModalTimeOut
+      :show-modal="showTimeOutModal"
+      :payload="submissionPayload"
+      @result-clicked="openResultModal"
+      @take-exams="handleTakeExams"
+      @close="showTimeOutModal = false"
+    />
   </div>
 </template>
 <script>
@@ -55,6 +68,7 @@ import HeaderExam from '~/components/exam/DetailExam/HeaderExam.vue'
 import ModalSendExam from '~/components/exam/ModalSendExam/SendExam.vue'
 import ModalOutExam from '~/components/exam/ModalOutExam/OutExam.vue'
 import ModalResultExam from '~/components/exam/ModalResultExam/ResultExam.vue'
+import ModalTimeOut from '~/components/exam/ModalTimeOut/index.vue'
 export default {
   name: 'Slug',
   components: {
@@ -65,6 +79,7 @@ export default {
     ModalSendExam,
     ModalOutExam,
     ModalResultExam,
+    ModalTimeOut,
   },
   layout: 'testLayout',
   data() {
@@ -72,6 +87,7 @@ export default {
       showSendModal: false,
       showOutModal: false,
       showResultModal: false,
+      showTimeOutModal: false,
       // detailExam: null,
       selectedAnswers: {},
       submissionPayload: null,
@@ -81,38 +97,16 @@ export default {
   computed: {
     ...mapState('exam', ['detailExam']),
     ...mapGetters('exam', ['getDetailExam']),
-    //   ExamQuestionsExtends() {
-    //     // Check if this.detailExam is defined before accessing its properties
-    //     // return (
-    //     //   this.detailExam &&
-    //     //   this.detailExam.questions &&
-    //     //   this.detailExam.questions.questions_extends.length > 0
-    //     // )
-    //   },
   },
 
   mounted() {
-    // const savedSendModalState = localStorage.getItem('sendModalState')
-    // if (savedSendModalState !== null) {
-    //   this.showSendModal = savedSendModalState === 'true'
-    // }
-
-    // const savedOutModalState = localStorage.getItem('outModalState')
-    // if (savedOutModalState !== null) {
-    //   this.showOutModal = savedOutModalState === 'true'
-    // }
-    // const savedResultModalState = localStorage.getItem('resultModalState')
-    // if (savedResultModalState !== null) {
-    //   this.showResultModal = savedResultModalState === 'true'
-    // }
     if (this.$route.query.slugExam) {
       this.slugExam = this.$route.query.slugExam
     }
-    this.$nuxt.$on('time-is-up', this.showSendModal === true)
-    // console.log('lll', this.detailExam)
+
     this.getExamBySlug(this.slugExam)
     this.setDetailExam(this.detailExam)
-    console.log(this.detailExam)
+    console.log(this.submissionPayload)
   },
   methods: {
     ...mapActions('exam', ['getExamBySlug', 'setDetailExam']),
@@ -124,7 +118,9 @@ export default {
     },
     handleSendPayload(payload) {
       this.submissionPayload = payload
-      // console.log('...', this.submissionPayload)
+    },
+    handlePayload(payload) {
+      this.submissionPayload = payload
     },
     handleTakeExams(data) {
       this.takeExams = data
@@ -141,25 +137,9 @@ export default {
       this.showResultModal = true
       // localStorage.setItem('resultModalState', this.showResultModal.toString())
       this.closeSendModal()
+      this.showTimeOutModal = false
     },
   },
 }
 </script>
-<style scoped>
-@media (min-width: 375px) and (max-width: 899px) {
-  .container-1 {
-    width: 100%;
-  }
-  .test-exam {
-    width: 100%;
-    margin: 0 10px;
-  }
-  .introduction-exam {
-    display: none;
-  }
-  .header-exam {
-    display: block;
-    /* margin: 10px; */
-  }
-}
-</style>
+<style scoped></style>

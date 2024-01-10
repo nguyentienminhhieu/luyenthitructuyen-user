@@ -2,7 +2,8 @@
   <div class="my-8 mx-20 text-[#585858]">
     <SliderHome />
     <HotExam />
-    <RankHistory />
+    <LastContent />
+    <!-- <RankHistory /> -->
     <!-- <TopCategory /> -->
   </div>
 </template>
@@ -10,7 +11,8 @@
 <script>
 import SliderHome from '~/components/home/Slider.vue'
 import HotExam from '~/components/home/HotExam.vue'
-import RankHistory from '~/components/home/RankHistory.vue'
+import LastContent from '~/components/home/LastContent.vue'
+// import RankHistory from '~/components/home/RankHistory.vue'
 // import TopCategory from '~/components/home/TopCategory.vue'
 
 export default {
@@ -18,15 +20,15 @@ export default {
   components: {
     SliderHome,
     HotExam,
+    LastContent,
     // TopCategory,
-    RankHistory,
+    // RankHistory,
   },
   computed: {},
   mounted() {
     localStorage.removeItem('answersKey')
     localStorage.removeItem('remainingTime')
     localStorage.removeItem('questionData')
-
   },
   methods: {},
 }

@@ -1,92 +1,67 @@
 <template>
   <div
-    class="flex flex-col break-words rounded-lg bg-[#ffff] fixed max-w-[230px] h-[300px] overflow-y-auto"
+    v-if="questions.length > 0"
+    class="flex flex-col my-5 break-words shadow-xl rounded-lg bg-[#ffff] fixed max-w-[250px] max-h-[392px] overflow-y-auto"
   >
     <div class="p-2">
-      <div class="flex justify-between">
-        <h3>
-          Mon thi:
-          {{ detailExam.category_id }}
-        </h3>
-        <button @click="editExam">
-          <i class="fas fa-edit text-gray-500 hover:text-gray-700"></i>
-        </button>
+      <!-- <h3>Danh sách câu hỏi:</h3> -->
+      <div class="p-2">
+        <div class="flex flex-row flex-wrap">
+          <button
+            v-for="(question, index) in questions"
+            :key="index"
+            class="rounded-full w-8 h-8 m-1"
+            :class="getButtonClass(question, index)"
+            @click="goToQuestion(index + 1)"
+          >
+            {{ index + 1 }}
+          </button>
+        </div>
       </div>
-      <h3>Lop: ...........</h3>
-      <h3>Điểm tối đa: {{ detailExam.max_score }}</h3>
-      <h3>Thời gian: {{ detailExam.duration }}</h3>
     </div>
-    <!-- <div class="p-2">
-      <h3>Danh sách câu hỏi:</h3>
-      <div class="flex flex-row flex-wrap">
-        <button
-          v-for="index in questions.length"
-          :key="index"
-          class="rounded-full w-8 h-8 m-1 bg-gray-500 text-white items-center justify-center hover:bg-gray-600 hover:text-white"
-          @click="goToQuestion(index)"
-        >
-          {{ index }}
-        </button>
-      </div>
-    </div> -->
   </div>
 </template>
 
 <script>
+import Vue from 'vue'
+export const EventBus = new Vue()
 export default {
   name: 'RedirectQuestion',
   props: {
     detailExam: Object,
+    questions: Array,
   },
   data() {
     return {
-      // questions: [
-      //   'Câu hỏi 1',
-      //   'Câu hỏi 2',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      //   'Câu hỏi 3',
-      // ], // Thay thế bằng danh sách câu hỏi của bạn
+      questionContents: [],
     }
   },
-  // mounted() {
-  //   console.log('connn: ', this.detailExam)
-  // },
+  watch: {
+    questions: {
+      handler(newQuestions) {
+        this.questionContents = newQuestions.map(
+          (question, index) => `Câu ${index + 1}.`
+        )
+        // console.log(this.questionContents)
+      },
+      immediate: true,
+      deep: true,
+    },
+  },
+  mounted() {
+    EventBus.$on('go-to-question-exam-create', this.handleGoToQuestion)
+  },
   methods: {
-    editExam() {
-      this.$emit('edit-clicked')
+    getButtonClass(question, index) {
+      return {
+        'rounded-full w-8 h-8 m-1  text-black items-center justify-center border-[1px] border-[#bababa] bg-gray-200 hover:bg-gray-300 hover:text-white':
+          !question.content.trim() || question.content.trim() === '',
+        'rounded-full w-8 h-8 m-1  text-black items-center justify-center border-2 border-[#273c75] bg-[#909bbb] hover:bg-[#35529f] hover:text-white':
+          question.content.trim() !== '',
+      }
     },
     goToQuestion(index) {
-      console.log(`Điều hướng đến câu hỏi ${index}`)
+      EventBus.$emit('go-to-question-exercise-create', index)
     },
   },
 }

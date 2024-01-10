@@ -5,27 +5,30 @@
         Lịch sử thi
       </h2>
       <h2 v-if="user.role === 2" class="text-lg font-semibold text-[#273c75]">
-        Lịch sử tạo đề thi
+        Lịch sử tạo Đề thi và Bài tập
       </h2>
     </div>
     <div
       v-if="user.role === 1"
-      class="table-1 w-[50%] items-center mx-auto my-20 overflow-x-auto max-h-[600px]"
+      class="table-hs w-[50%] items-center mx-auto my-20 overflow-x-auto max-h-[600px]"
     >
-      <!-- {{ listGrade.subjects }} -->
-      <div v-for="item in listGradeSearch" :key="item.id" class="relative my-2">
-        <select
-          v-model="selectedOption"
-          class="border-b-2 border-gray-300 rounded py-1 px-2 focus:outline-none"
+      <div class="relative my-2">
+        <label
+          for="subjectSelect"
+          class="absolute top-0 left-0 ml-2 mt-1 text-gray-500 transition-transform transform-origin-left"
+          :class="{ hidden: selectedOptionSubject }"
         >
-          <option
-            v-for="subject in item.subjects"
-            :key="subject.id"
-            :value="subject.id"
-          >
-            {{ subject.name }}
+          Môn học
+        </label>
+        <select
+          id="subjectSelect"
+          v-model="selectedOptionSubject"
+          class="border-b-2 border-gray-300 rounded py-1 px-2 focus:outline-none shadow-xl"
+          @change="handleOptionSubject"
+        >
+          <option v-for="item in listSubject" :key="item.id" :value="item.id">
+            {{ item.name }}
           </option>
-          <!-- Thêm các option khác nếu cần -->
         </select>
       </div>
       <table class="w-[100%] border-collapse border border-gray-300 rounded-lg">
@@ -49,17 +52,28 @@
             <th
               class="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider border-r-2"
             >
-              Ngày thi
+              Môn học
             </th>
+            <!-- <th
+              class="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider border-r-2"
+            >
+              Số lần luyện
+            </th> -->
             <th
               class="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider border-r-2"
-            ></th>
+            >
+              Ngày thi
+            </th>
           </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
+        <tbody
+          v-if="listHistoryExam.length > 0"
+          class="bg-white divide-y divide-gray-200"
+        >
           <tr
             v-for="(exam, index) in listHistoryExam"
             :key="index"
+            @click="detailExamDoneUser(exam)"
             class="cursor-pointer hover:bg-gray-300"
             :class="{ 'bg-gray-100': index % 2 === 0 }"
           >
@@ -67,51 +81,82 @@
               {{ truncateText(exam.exam.title, 20) }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap border-r-2">
-              {{ exam.total_score }} /100
+              {{ exam.total_score }} /{{ exam.exam?.max_score }}
             </td>
             <td class="px-2 py-4 whitespace-nowrap border-r-2">
-              {{ exam.total_question_success }} / 40
+              {{ exam.total_question_success }} / {{ exam.total_question }}
             </td>
+            <td class="px-2 py-4 whitespace-nowrap border-r-2">
+              {{ exam.exam?.category?.title }}
+            </td>
+            <!-- <td class="px-2 py-4 whitespace-nowrap border-r-2">
+              {{ exam.times }}
+            </td> -->
             <td class="px-2 py-4 whitespace-nowrap border-r-2">
               {{ getFirstTenChars(exam.exam.created_at) }}
             </td>
-            <td class="px-2 py-4 whitespace-nowrap border-r-2">
-              <button @click="detailExamDoneUser(exam)">
-                <i
-                  class="fa-regular fa-eye text-yellow-600 hover:text-yellow-700 ml-2"
-                ></i>
-              </button>
-            </td>
           </tr>
         </tbody>
+        <tbody v-if="listHistoryExam.length === 0">
+          <div class="text-center m-5 text-gray-500 text-xl underline">
+            *Bạn chưa thi lần nào
+          </div>
+        </tbody>
       </table>
+      <div v-if="totalPages != 1" class="flex items-center space-x-2 mt-8">
+        <button
+          class="bg-[#f4f4f5] text-[#7d7d7d] py-2 px-3 rounded-md"
+          :disabled="currentPageNumber === 1"
+          @click="goToPrevPage"
+        >
+          <i class="fa-solid fa-angle-left"></i>
+        </button>
+        <ul class="flex items-center space-x-2">
+          <li
+            v-for="page in totalPages"
+            :key="page"
+            :class="{
+              active:
+                currentPageNumber === page ||
+                (!currentPageNumber && page === 1),
+            }"
+            class="font-medium py-2 px-3 bg-[#f4f4f5] text-[#7d7d7d] hover:bg-[#3958ad] hover:text-[#fff] rounded-lg cursor-pointer"
+            @click="goToPage(page)"
+          >
+            {{ page }}
+          </li>
+        </ul>
+        <button
+          class="bg-[#f4f4f5] text-[#7d7d7d] py-2 px-3 rounded-md"
+          :disabled="currentPageNumber === totalPages"
+          @click="goToNextPage"
+        >
+          <i class="fa-solid fa-angle-right"></i>
+        </button>
+      </div>
     </div>
 
-    <div v-if="user.role === 2">
-      <div
-        class="table-1 flex w-[100%] items-center mx-auto my-20 overflow-x-auto max-h-[500px]"
-      >
-        <div
-          v-for="item in listGradeSearch"
-          :key="item.id"
-          class="relative my-2"
+    <div
+      v-if="user.role === 2"
+      class="table-all w-[50%] items-center mx-auto my-20"
+    >
+      <!-- <div class="relative my-2 w-[300px] shadow-xl rounded-md border-1">
+        <input
+          v-model="searchedExam"
+          @input="updateFilteredExam"
+          placeholder="Search for a exam..."
+          class="w-full first-letter:border-b-2 border-gray-300 rounded py-2 pl-4 pr-6 focus:outline-none"
+        />
+        <button
+          class="absolute right-0 top-1/2 mx-2 transform -translate-y-1/2 text-gray-400 text-color-custom hover:text-gray-600 focus:outline-none"
+          @click="updateFilteredExam"
         >
-          <select
-            v-model="selectedOption"
-            class="border-b-2 border-gray-300 rounded py-1 px-2 focus:outline-none"
-          >
-            <option
-              v-for="subject in item.subjects"
-              :key="subject.id"
-              :value="subject.id"
-            >
-              {{ subject.name }}
-            </option>
-            <!-- Thêm các option khác nếu cần -->
-          </select>
-        </div>
+          <i class="fas fa-search"></i>
+        </button>
+      </div> -->
+      <div class="table-1 flex flex-col w-[100%]">
         <table
-          class="w-[50%] border-collapse border border-gray-300 rounded-lg"
+          class="w-[100%] max-h-[500px] overflow-x-auto border-collapse border border-gray-300 rounded-lg"
         >
           <thead>
             <tr class="bg-[#3c445c] text-white">
@@ -136,24 +181,29 @@
                 Active
               </th>
               <th
+                class="px-1 py-3 text-left text-xs font-medium uppercase tracking-wider border-r-2"
+              >
+                Số lần đã thi
+              </th>
+              <th
                 class="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider border-r-2"
               ></th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody
+            v-if="listExamByTeacher.length > 0"
+            class="bg-white divide-y divide-gray-200"
+          >
             <tr
-              v-for="(exam, index) in listExam"
+              v-for="(exam, index) in listExamByTeacher"
               :key="index"
               class="cursor-pointer hover:bg-gray-300"
               :class="{ 'bg-gray-100': index % 2 === 0 }"
             >
-              <td
-                @click="openTableExamDone(exam.id)"
-                class="pl-3 py-4 whitespace-nowrap border-r-2"
-              >
-                {{ truncateText(exam.title, 20) }}
+              <td class="pl-3 py-4 whitespace-nowrap border-r-2">
+                {{ truncateText(exam.title, 30) }}
               </td>
-              <td class="pl-2 py-4 whitespace-nowrap border-r-2">
+              <td class="pl-2 py-4 px-2 whitespace-nowrap border-r-2">
                 {{ exam.category?.title }}
               </td>
               <td class="pl-2 py-4 whitespace-nowrap border-r-2">
@@ -162,6 +212,9 @@
               </td>
               <td class="pl-2 py-4 whitespace-nowrap border-r-2">
                 {{ exam.is_active === 0 ? 'InActive' : 'Active' }}
+              </td>
+              <td class="pl-2 py-4 whitespace-nowrap border-r-2">
+                {{ examDoneLength[exam.id] }}
               </td>
               <td class="px-2 py-4 whitespace-nowrap">
                 <button @click="editExam(exam)">
@@ -177,109 +230,98 @@
                     class="fa-regular fa-eye text-yellow-600 hover:text-yellow-700 ml-2"
                   ></i>
                 </button>
+                <button @click="openTableExamDone(exam.id)">
+                  <i class="fa-regular fa-comment ml-2"></i>
+                </button>
               </td>
             </tr>
+          </tbody>
+          <tbody v-if="listExamByTeacher.length === 0">
+            <div class="text-center m-5 text-gray-500 text-xl underline">
+              *Bạn chưa tạo đề thi lần nào
+            </div>
           </tbody>
         </table>
         <TableExamDone v-if="openTable" :list-exam-done="examDone" />
       </div>
-      <div v-if="user.role === 2">
-        <div
-          class="table-1 flex w-[100%] items-center mx-auto my-20 overflow-x-auto max-h-[500px]"
+      <div v-if="user.role === 2" class="w-[100%] items-center mx-auto my-20">
+        <table
+          class="w-[100%] border-collapse border border-gray-300 rounded-lg"
         >
-          <div
-            v-for="item in listGradeSearch"
-            :key="item.id"
-            class="relative my-2"
+          <thead>
+            <tr class="bg-[#3c445c] text-white">
+              <th
+                class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider border-r-2"
+              >
+                Tên bài tập
+              </th>
+              <th
+                class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider border-r-2"
+              >
+                Thể loại
+              </th>
+              <th
+                class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider border-r-2"
+              >
+                Ngày tạo/ Ngày sửa
+              </th>
+              <th
+                class="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider border-r-2"
+              >
+                Active
+              </th>
+              <th
+                class="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider border-r-2"
+              ></th>
+            </tr>
+          </thead>
+          <tbody
+            v-if="listExercise.length > 0"
+            class="bg-white divide-y divide-gray-200"
           >
-            <select
-              v-model="selectedOption"
-              class="border-b-2 border-gray-300 rounded py-1 px-2 focus:outline-none"
+            <tr
+              v-for="(exercise, index) in listExercise"
+              :key="index"
+              class="cursor-pointer hover:bg-gray-300"
+              :class="{ 'bg-gray-100': index % 2 === 0 }"
             >
-              <option
-                v-for="subject in item.subjects"
-                :key="subject.id"
-                :value="subject.id"
-              >
-                {{ subject.name }}
-              </option>
-              <!-- Thêm các option khác nếu cần -->
-            </select>
-          </div>
-          <table
-            class="w-[50%] border-collapse border border-gray-300 rounded-lg"
-          >
-            <thead>
-              <tr class="bg-[#3c445c] text-white">
-                <th
-                  class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider border-r-2"
-                >
-                  Tên bài tập
-                </th>
-                <th
-                  class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider border-r-2"
-                >
-                  Thể loại
-                </th>
-                <th
-                  class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider border-r-2"
-                >
-                  Ngày tạo/ Ngày sửa
-                </th>
-                <th
-                  class="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider border-r-2"
-                >
-                  Active
-                </th>
-                <th
-                  class="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider border-r-2"
-                ></th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr
-                v-for="(exercise, index) in listExercise"
-                :key="index"
-                class="cursor-pointer hover:bg-gray-300"
-                :class="{ 'bg-gray-100': index % 2 === 0 }"
-              >
-                <td
-                  @click="openTableExamDone(exam.id)"
-                  class="pl-3 py-4 whitespace-nowrap border-r-2"
-                >
-                  {{ truncateText(exercise.title, 20) }}
-                </td>
-                <td class="pl-2 py-4 whitespace-nowrap border-r-2">
-                  {{ exercise.category?.title }}
-                </td>
-                <td class="pl-2 py-4 whitespace-nowrap border-r-2">
-                  {{ getFirstTenChars(exercise.created_at) }}/
-                  {{ getFirstTenChars(exercise.updated_at) }}
-                </td>
-                <td class="pl-2 py-4 whitespace-nowrap border-r-2">
-                  {{ exercise.is_active === 0 ? 'InActive' : 'Active' }}
-                </td>
-                <td class="px-2 py-4 whitespace-nowrap">
-                  <button @click="editExercise(exercise)">
-                    <i
-                      class="fas fa-edit text-blue-500 hover:text-blue-700"
-                    ></i>
-                  </button>
-                  <button @click="deleteExercise(exercise.id)">
-                    <i
-                      class="fas fa-trash text-red-500 hover:text-red-700 ml-2"
-                    ></i>
-                  </button>
-                  <button @click="detailExercise(exercise)">
-                    <i
-                      class="fa-regular fa-eye text-yellow-600 hover:text-yellow-700 ml-2"
-                    ></i>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+              <td class="pl-3 py-4 whitespace-nowrap border-r-2">
+                {{ truncateText(exercise.title, 40) }}
+              </td>
+              <td class="pl-2 py-4 px-2 whitespace-nowrap border-r-2">
+                {{ exercise.category?.title }}
+              </td>
+              <td class="pl-2 py-4 whitespace-nowrap border-r-2">
+                {{ getFirstTenChars(exercise.created_at) }}/
+                {{ getFirstTenChars(exercise.updated_at) }}
+              </td>
+              <td class="pl-2 py-4 whitespace-nowrap border-r-2">
+                {{ exercise.is_active === 0 ? 'InActive' : 'Active' }}
+              </td>
+              <td class="px-2 py-4 whitespace-nowrap">
+                <button @click="editExercise(exercise)">
+                  <i class="fas fa-edit text-blue-500 hover:text-blue-700"></i>
+                </button>
+                <button @click="deleteExercise(exercise.id)">
+                  <i
+                    class="fas fa-trash text-red-500 hover:text-red-700 ml-2"
+                  ></i>
+                </button>
+                <button @click="detailExercise(exercise)">
+                  <i
+                    class="fa-regular fa-eye text-yellow-600 hover:text-yellow-700 ml-2"
+                  ></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <tbody v-if="listExercise.length === 0">
+            <div class="text-center m-5 text-gray-500 text-xl underline">
+              *Bạn chưa tạo đề thi lần nào
+            </div>
+          </tbody>
+        </table>
+        <!-- </div> -->
       </div>
     </div>
   </div>
@@ -299,32 +341,66 @@ export default {
   data() {
     return {
       examDone: null,
+      examDoneLength: {},
       openTable: false,
       selectedOption: null,
+      searchQuery: '',
+      searchedExam: '',
+      searchedExercise: '',
+      filteredExam: [],
+      currentPageNumber: this.currentPage,
+      selectedOptionSubject: null,
     }
   },
   computed: {
     ...mapState('users', ['user']),
     ...mapState('exam', ['listHistoryExam']),
-    ...mapState('exam', ['listExam']),
+    ...mapState('exam', ['listExamByTeacher']),
     ...mapState('exam', ['listExamDone']),
+    ...mapState('exam', ['currentPage ']),
+    ...mapState('exam', ['totalPages']),
+    ...mapState('exam', ['itemsPerPage']),
+    ...mapState('exam', ['totalItems']),
     ...mapState('exerciseByTeacher', ['listExercise']),
+    ...mapState('subject', ['listSubject']),
 
     ...mapState('grade', ['listGrade']),
     listGradeSearch() {
       return this.listGrade.filter((item) => item.id < 2)
     },
+    displayedExams() {
+      if (this.searchedExam !== '') {
+        return this.filteredExam
+      }
+      return this.listExam
+    },
+
+    // examDoneLength() {
+    //   return this.examDone ? this.examDone.length : 0
+    // },
+  },
+  watch: {
+    currentPageNumber(newPageNumber) {
+      localStorage.setItem('currentPagHistoryExam', newPageNumber)
+    },
   },
   async mounted() {
+    this.currentPageNumber =
+      parseInt(localStorage.getItem('currentPagHistoryExam')) || 1
+
     await this.getInfoUser()
     if (this.user.role === 1) {
-      await this.getListHistoryExamByUser(this.userInfo)
+      await this.getListExamUserHis()
     } else {
       await this.getListExamByTeacher()
       await this.getListExercise()
     }
     this.getGrade()
-    // console.log("dd", this.listGrade);
+    this.getSubjects()
+    for (const exam of this.listExamByTeacher) {
+      await this.getExamByDoneUser(exam.id)
+      this.$set(this.examDoneLength, exam.id, this.listExamDone.length)
+    }
   },
   methods: {
     ...mapActions('users', ['getInfoUser']),
@@ -332,13 +408,37 @@ export default {
     ...mapActions('exam', ['getListExamByTeacher']),
     ...mapActions('exam', ['getExamByDoneUser']),
     ...mapActions('exerciseByTeacher', ['getListExercise']),
+    ...mapActions('subject', ['getSubjects']),
 
+    // async performSearch() {
+    //   await this.$store.dispatch('exam/getListHistoryExamByUser', {
+    //     title: this.searchQuery,
+    //   })
+    // },
     ...mapActions('grade', ['getGrade']),
+    async getListExamUserHis() {
+      try {
+        await this.$store.dispatch('exam/getListHistoryExamByUser', {
+          userID: this.userInfo,
+          page: this.currentPageNumber,
+        })
+      } catch (error) {
+        console.error('Lỗi khi lấy dữ liệu:', error)
+      }
+    },
     async openTableExamDone(id) {
-      this.openTable = true
+      this.openTable = !this.openTable
       await this.getExamByDoneUser(id)
       this.examDone = this.listExamDone
+      // this.examDoneLength[id] = this.listExamDone
     },
+    // async examDoneLengthClick(id) {
+    //   await this.getExamByDoneUser(id)
+    //   // this.examDoneAll = this.listExamDone
+    //   const examDoneAll = this.listExamDone.length
+    //   return examDoneAll
+    //   // return this.examDoneLength[id] ? this.examDoneLength[id].length : 0
+    // },
     editExam(exam) {
       this.$emit('edit-clicked', exam)
     },
@@ -350,6 +450,7 @@ export default {
     },
     deleteExam(examId) {
       this.$emit('delete-clicked', examId)
+      this.getListExamByTeacher()
     },
     editExercise(exercise) {
       this.$emit('edit-clicked-exercise', exercise)
@@ -362,12 +463,13 @@ export default {
     },
     deleteExercise(exerciseId) {
       this.$emit('delete-exercise-clicked', exerciseId)
+      this.getListExercise()
     },
     detailExamDoneUser(exam) {
       this.$router.push({
-        path: `/exam/result-exam/${exam.exam_id}`,
+        path: `/exam/result-exam/${exam.id}`,
         query: {
-          idExam: exam.exam_id,
+          idExam: exam.id,
         },
       })
     },
@@ -382,21 +484,73 @@ export default {
         return text
       }
     },
+    async updateFilteredExam() {
+      try {
+        const payload = {
+          limit: '20',
+        }
+        await this.getListExamByTeacher(payload)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      }
+    },
+    async goToNextPage() {
+      if (this.currentPageNumber < this.totalPages) {
+        this.currentPageNumber++
+        await this.$store.dispatch('exam/getListHistoryExamByUser', {
+          userID: this.userInfo,
+          page: this.currentPageNumber,
+        })
+      }
+    },
+    async goToPrevPage() {
+      if (this.currentPageNumber > 1) {
+        this.currentPageNumber--
+        await this.$store.dispatch('exam/getListHistoryExamByUser', {
+          userID: this.userInfo,
+          page: this.currentPageNumber,
+        })
+      }
+    },
+    async goToPage(pageNumber) {
+      this.currentPageNumber = pageNumber
+      await this.$store.dispatch('exam/getListHistoryExamByUser', {
+        userID: this.userInfo,
+        page: this.currentPageNumber,
+      })
+    },
+    async handleOptionSubject() {
+      await this.$store.dispatch('exam/getListHistoryExamByUser', {
+        subject_id: this.selectedOptionSubject,
+      })
+    },
   },
 }
 </script>
 
 <style scoped>
+.active {
+  background-color: #3958ad;
+  color: #ffff;
+}
+.disabled {
+  background-color: #e8e8e8;
+  cursor: not-allowed;
+}
 @media (min-width: 360px) and (max-width: 899px) {
   /* .containers {
     flex-direction: column;
   } */
-  .table-1 {
-    display: flex;
-    flex-direction: column;
+  .table-all {
     width: 100%;
-    margin-left: 10px;
-    /* overflow-x: none; */
+  }
+  .table-hs {
+    width: 100%;
+  }
+  .table-1 {
+    /* display: flex;
+    flex-direction: column; */
+    width: 100%;
   }
   .table-1 table {
     width: 90%;

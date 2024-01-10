@@ -28,7 +28,7 @@
 <script>
 import { mapActions } from 'vuex'
 import Vue from 'vue'
-export const EventBus = new Vue()
+// export const EventBus = new Vue()
 export default {
   name: 'IntroductionExam',
   props: {
@@ -49,21 +49,20 @@ export default {
       this.remainingTime = this.totalTime
     }
     this.startCountdown()
+    // console.log(this.selectedAnswers)
   },
   watch: {
-    detailExam: {
-      handler(newValue, oldValue) {
-        console.log('123', newValue, this.selectedAnswers)
-        this.selectedAnswers
+    selectedAnswers: {
+      handler(newValue) {
+        // console.log('hieu2', newValue)
       },
-      deep: true,
-      immediate: true,
+      // deep: true,
+      // immediate: true,
     },
   },
 
   methods: {
     isQuestionSelected(questionId) {
-      // console.log(this.selectedAnswers)
       return (
         this.selectedAnswers &&
         this.selectedAnswers.hasOwnProperty(String(questionId))
@@ -77,9 +76,9 @@ export default {
       // localStorage.removeItem('remainingTime')
       // this.$router.push('/')
     },
-    goToQuestion(index) {
-      EventBus.$emit('go-to-question', index)
-    },
+    // goToQuestion(index) {
+    //   EventBus.$emit('go-to-question', index)
+    // },
     startCountdown() {
       this.countdownInterval = setInterval(() => {
         if (this.remainingTime > 0) {
@@ -107,3 +106,10 @@ export default {
 
 } */
 </style>
+// 'detailExam.questions': { // handler(newValue) { // console.log('hieu123',
+newValue) // this.detailExamStatus = newValue // // newValue.filter((exam) =>
+exam.answers) // }, // deep: true, // }, // detailExamStatus: { //
+handler(newValue) { // console.log('h', newValue) // }, // deep: true, // },
+bg-[#273c75]
+bg-[#35529f]
+bg-[#b3b3b3]

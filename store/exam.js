@@ -4,19 +4,30 @@ import { getAuthorizationConfig } from '~/plugins/configToken'
 
 export const state = () => ({
   listExam: [],
+  listExamByTeacher: [],
+  listExamSearch: [],
   detailExam: {},
   takeExams: {},
   reviewExam: {},
   listHistoryExam: [],
   listExamDone: [],
+  currentPage: 1,
+  totalPages: null,
+  itemsPerPage: null,
+  totalItems: null,
 })
 
 export const actions = {
-  async getListExamCategory({ commit }, slug) {
+  async getListExamCategory({ commit }, payload) {
     try {
       // const config = getAuthorizationConfig()
       const response = await this.$axios.get('/list-exams', {
-        params: { category_slug: slug },
+        params: {
+          title: payload.title,
+          category_slug: payload.slug,
+          limit: payload.limit,
+          page: payload.page,
+        },
       })
       const data = response.data
       commit('SET_LIST_EXAM_CATEGORY', data.data)
@@ -61,12 +72,15 @@ export const actions = {
       commit('SET_REVIEW_EXAM', data.data)
     } catch {}
   },
-  async getListHistoryExamByUser({ commit }, userID) {
+  async getListHistoryExamByUser({ commit }, payload) {
     try {
       const config = getAuthorizationConfig()
       const response = await this.$axios.get('/list-history-exams-by-user', {
         params: {
-          id: userID,
+          id: payload.userID,
+          limit: '10',
+          subject_id: payload.subject_id,
+          page: payload.page,
         },
         ...config,
       })
@@ -80,13 +94,14 @@ export const actions = {
     try {
       const config = getAuthorizationConfig()
       const response = await this.$axios.get('/list-exam-create-by-teacher', {
+        params: {
+          limit: '20',
+        },
         ...config,
       })
-      const data = response.data
+      const data = response.data?.data
       commit('SET_LIST_EXAM_BY_TEACHER', data.data)
-    } catch (error) {
-      console.log('Loi sever, ', error)
-    }
+    } catch {}
   },
   async getExamByDoneUser({ commit }, examID) {
     try {
@@ -96,21 +111,55 @@ export const actions = {
         {
           params: {
             exam_id: examID,
+            limit: '20',
           },
           ...config,
         }
       )
-      const data = response.data
+      const data = response.data?.data
       commit('SET_EXAM_DONE_BY_USER', data.data)
     } catch (error) {
       console.log('Loi sever, ', error)
     }
   },
+  async getListExamHome({ commit }, examID) {
+    try {
+      const config = getAuthorizationConfig()
+      const response = await this.$axios.get('/list-exam-home', config)
+      const data = response.data
+      commit('SET_LIST_EXAM_HOME', data.data)
+    } catch (error) {
+      console.log('Loi sever, ', error)
+    }
+  },
+  async getListExamsSearch({ commit }, payload) {
+    try {
+      // category_slug: payload.category_slug,
+      const config = getAuthorizationConfig()
+      const response = await this.$axios.get('/list-exams', {
+        params: {
+          limit: payload.limit,
+          category_slug: payload.category_slug,
+          title: payload.title,
+        },
+        ...config,
+      })
+      const data = response.data?.data
+      commit('SET_LIST_EXAM_SEARCH', data.data)
+    } catch (error) {
+      console.log('Loi sever, ', error)
+    }
+  },
 }
+
 export const mutations = {
   updateField,
   SET_LIST_EXAM_CATEGORY(state, data) {
-    state.listExam = data
+    state.listExam = data.data
+    state.currentPage = data.current_page
+    state.totalPages = data.last_page
+    state.itemsPerPage = data.per_page
+    state.totalItems = data.total
   },
   SET_DETAIL_EXAM_SLUG(state, data) {
     state.detailExam = data
@@ -125,13 +174,27 @@ export const mutations = {
     state.detailExam = data
   },
   SET_HISTORY_EXAM_BY_USER(state, data) {
-    state.listHistoryExam = data
+    state.listHistoryExam = data.data
+    state.currentPage = data.current_page
+    state.totalPages = data.last_page
+    state.itemsPerPage = data.per_page
+    state.totalItems = data.total
   },
   SET_LIST_EXAM_BY_TEACHER(state, data) {
-    state.listExam = data
+    state.listExamByTeacher = data
   },
   SET_EXAM_DONE_BY_USER(state, data) {
     state.listExamDone = data
+    state.currentPage = data.current_page
+    state.totalPages = data.last_page
+    state.itemsPerPage = data.per_page
+    state.totalItems = data.total
+  },
+  SET_LIST_EXAM_HOME(state, data) {
+    state.listExam = data
+  },
+  SET_LIST_EXAM_SEARCH(state, data) {
+    state.listExamSearch = data
   },
 }
 

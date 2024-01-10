@@ -30,8 +30,16 @@
         </div>
       </div>
     </div>
-    <div class="mt-4 mx-7">
-      <ListQuestions :questions-extends="questions" />
+    <div class="flex flex-row mt-4 mx-7">
+      <div class="redirect-question lg:w-1/5">
+        <RedirectQuestion
+          :detail-exam="detailExamDeep"
+          :questions="questions"
+        />
+      </div>
+      <div class="lg:w-4/5">
+        <ListQuestions :questions-extends="questions" />
+      </div>
     </div>
     <BtnPushQ @push-array="pushArray" />
     <SaveBtn :detail-exam="detailExamDeep" :list-questions="questions" />
@@ -40,16 +48,16 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import ListQuestions from '~/components/ExamByTeacher/DetailExam/List/ListQuestions.vue'
+import RedirectQuestion from '~/components/ExamByTeacher/DetailExam/RedirectQuestion.vue'
 import SaveBtn from '~/components/common/SaveBtn.vue'
 import BtnPushQ from '~/components/common/BtnPushQ.vue'
-// import RedirectQuestion from '~/components/admin/exams/DetailExam/redirectQuestion.vue'
 export default {
   name: 'DetailExamByTracher',
   components: {
     ListQuestions,
     SaveBtn,
     BtnPushQ,
-    // RedirectQuestion,
+    RedirectQuestion,
   },
   data() {
     return {
@@ -103,7 +111,8 @@ export default {
       const randomId = Math.floor(Math.random(10) * 100000)
       let newQuestion = {
         random_Id: randomId,
-        content: `Câu ${this.questions.length + 1}.`,
+        // content: `Câu ${this.questions.length + 1}.`,
+        content: '',
         slug: '',
         description: '',
         explanation: '',

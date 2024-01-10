@@ -12,9 +12,14 @@ export const actions = {
       const config = getAuthorizationConfig()
       const response = await this.$axios.get(
         '/list-exercise-create-by-teacher',
-        config
+        {
+          params: {
+            limit: '20',
+          },
+          ...config,
+        }
       )
-      const data = response.data
+      const data = response.data?.data
       commit('SET_EXEXRCISE', data.data)
     } catch (error) {
       console.log('Loi sever, ', error)

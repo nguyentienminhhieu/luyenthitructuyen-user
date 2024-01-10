@@ -11,7 +11,7 @@ export const actions = {
     try {
       const config = getAuthorizationConfig()
       const response = await this.$axios.post('/create-exam', payload, config)
-      const data = response.data
+      const data = response.data?.data
       commit('ADD_EXAM', data.data)
     } catch (error) {
       console.log('Loi sever, ', error)

@@ -4,35 +4,87 @@
   >
     <ul class="grid grid-cols-2 gap-2 cursor-pointer">
       <li
+        v-if="listExamByTeacher.length < 10"
         @click="openModalAddExam"
         class="p-4 rounded text-[#5d5d5d] font-bold hover:bg-gray-300 overflow-hidden whitespace-wrap text-ellipsis transition duration-300 ease-in-out"
       >
         Tạo Đề thi
       </li>
       <li
+        v-if="listExamByTeacher.length >= 10"
+        @click="overLengthExam"
+        class="p-4 rounded text-[#5d5d5d] font-bold hover:bg-gray-300 overflow-hidden whitespace-wrap text-ellipsis transition duration-300 ease-in-out"
+      >
+        Tạo Đề thi
+      </li>
+      <li
+        v-if="listExercise.length < 10"
         @click="openModalAddExercise"
         class="p-4 rounded text-[#5d5d5d] font-bold hover:bg-gray-300 overflow-hidden whitespace-wrap text-ellipsis transition duration-300 ease-in-out"
       >
         Tạo Bài tập
       </li>
+      <!-- {{
+        listExamByTeacher.length
+      }} -->
+      <li
+        v-if="listExercise.length >= 10"
+        @click="overLengthExercise"
+        class="p-4 rounded text-[#5d5d5d] font-bold hover:bg-gray-300 overflow-hidden whitespace-wrap text-ellipsis transition duration-300 ease-in-out"
+      >
+        Tạo Bài tập
+      </li>
     </ul>
+    <ToastSuccess v-if="showSuccessToast" :message="successMessage" />
+    <ToastError v-if="showErrorToast" :message="errorMessage" />
   </div>
 </template>
 <script>
 import { mapActions, mapState } from 'vuex'
+import ToastSuccess from '~/components/common/ToastSuccess.vue'
+import ToastError from '~/components/common/ToastError.vue'
 export default {
   name: 'CreateExamExe',
-  data() {
-    return {}
+  components: {
+    ToastSuccess,
+    ToastError,
   },
-  computed: {},
-  mounted() {},
+  data() {
+    return {
+      isPasswordVisible: false,
+      showSuccessToast: false,
+      showErrorToast: false,
+      successMessage: '',
+      errorMessage: 'Bạn tạo đã vượt quá số lượng cho phép',
+    }
+  },
+  computed: {
+    ...mapState('exam', ['listExamByTeacher']),
+    ...mapState('exerciseByTeacher', ['listExercise']),
+  },
+  mounted() {
+    this.getListExamByTeacher(), this.getListExercise()
+  },
   methods: {
+    ...mapActions('exam', ['getListExamByTeacher']),
+    ...mapActions('exerciseByTeacher', ['getListExercise']),
     openModalAddExam() {
       this.$emit('open-add-exam')
     },
     openModalAddExercise() {
       this.$emit('open-add-exercise')
+    },
+    overLengthExam() {
+      this.showErrorToast = true
+      setTimeout(() => {
+        this.showErrorToast = false
+      }, 3000)
+    },
+    overLengthExercise() {
+      this.showErrorToast = true
+      setTimeout(() => {
+        this.showErrorToast = false
+      }, 3000)
     },
   },
 }

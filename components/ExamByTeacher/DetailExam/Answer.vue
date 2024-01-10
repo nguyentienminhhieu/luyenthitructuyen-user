@@ -8,17 +8,18 @@
               <div class="flex items-center space-x-2">
                 <label class="relative cursor-pointer">
                   <input
-                    type="checkbox"
+                    :name="`radio-${question_id}`"
+                    type="radio"
                     class="hidden"
-                    :checked="isCorrect"
-                    @change="toggleCorrectness"
+                    :checked="answer.is_correct"
+                    @click="toggleCorrect(answer.random_Id || answer.id)"
                   />
                   <div
                     class="w-6 h-6 bg-gray-300 border border-gray-400 rounded-full flex items-center justify-center transition duration-300 ease-in-out"
-                    :class="{ 'bg-green-500': isCorrect }"
+                    :class="{ 'bg-green-500': answer.is_correct }"
                   >
                     <svg
-                      v-if="isCorrect"
+                      v-if="answer.is_correct"
                       class="w-4 h-4 text-white"
                       fill="none"
                       stroke="currentColor"
@@ -75,11 +76,6 @@
         >
           E+
         </button>
-        <!-- <button class="mb-1">
-          <i
-            class="fa-regular fa-image m-[3px] hover:bg-gray-400 rounded-full p-[5px]"
-          ></i>
-        </button> -->
         <button @click="deleteAnswer">
           <i
             class="fa-regular fa-trash-can m-[2px] hover:bg-red-400 rounded-full p-[5px]"
@@ -99,6 +95,7 @@ export default {
   mixins: [validationMixin],
   props: {
     answer: Object,
+    question_id: Number,
   },
   data() {
     return {
@@ -107,7 +104,6 @@ export default {
         explanation: this.answer.explanation,
       },
       handleExplanation: false,
-      isCorrect: this.answer.is_correct,
       selectedImage: null,
     }
   },
@@ -129,15 +125,12 @@ export default {
     'answerData.explanation'(newVal) {
       this.$set(this.answer, 'explanation', newVal)
     },
-    isCorrect(newVal) {
-      this.$set(this.answer, 'is_correct', newVal)
-    },
   },
   mounted() {},
   methods: {
     checkStatusClass,
-    toggleCorrectness() {
-      this.isCorrect = !this.isCorrect
+    toggleCorrect(idAnswer) {
+      this.$emit('id-answer', idAnswer)
     },
     deleteAnswer() {
       this.$emit('delete')

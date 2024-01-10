@@ -93,10 +93,10 @@
       </form>
 
       <div class="flex mt-10">
-        <div class="text-color-default mr-5">
+        <!-- <div class="text-color-default mr-5">
           <input type="checkbox" id="remember-password" class="mr-2" />
           <label for="remember-password">Ghi nhớ mật khẩu</label>
-        </div>
+        </div> -->
         <div class="text-color-custom hover:text-color-custom">
           <nuxt-link to="/forgot-password">Quên mật khẩu?</nuxt-link>
         </div>
@@ -141,7 +141,7 @@ export default {
       showSuccessToast: false,
       showErrorToast: false,
       successMessage: 'Đăng nhập thành công!.',
-      errorMessage: 'Lỗi! Sai email hoặc mật khẩu.',
+      errorMessage: 'Sai email hoặc mật khẩu hoặc chưa xác thực.',
     }
   },
   validations: {
@@ -193,7 +193,7 @@ export default {
             }, 3000)
           }
         } catch (error) {
-          console.log('Submit Failed', error)
+          alert('Submit Failed', error)
         }
       }
     },

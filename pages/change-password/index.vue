@@ -7,7 +7,7 @@
       <form class="mt-8 space-y-6" @submit.prevent="submitForm">
         <div class="relative">
           <label for="password" class="block text-color-default"
-            >Password</label
+            >New Password</label
           >
           <div class="flex items-center">
             <input
@@ -111,18 +111,26 @@
         </p>
       </div>
     </div>
+    <ToastSuccess v-if="showSuccessToast" :message="successMessage" />
+    <ToastError v-if="showErrorToast" :message="errorMessage" />
   </div>
 </template>
 <script>
 import { validationMixin } from 'vuelidate'
+import { mapState, mapActions } from 'vuex'
 import { required, maxLength, minLength } from 'vuelidate/lib/validators'
 import sameAs from 'vuelidate/lib/validators/sameAs'
 import { checkStatusClass } from '~/mixins/ruleValidator'
+import ToastSuccess from '~/components/common/ToastSuccess.vue'
+import ToastError from '~/components/common/ToastError.vue'
 export default {
   name: 'ChangePasswordForm',
   mixins: [validationMixin],
   // layout: 'authLayout',
-
+  components: {
+    ToastSuccess,
+    ToastError,
+  },
   data() {
     return {
       ruleForm: {
@@ -130,6 +138,10 @@ export default {
         confirmpassword: '',
       },
       isPasswordVisible: false,
+      showSuccessToast: false,
+      showErrorToast: false,
+      successMessage: 'Đổi mật khẩu thành công!',
+      errorMessage: 'Đổi mật khẩu thất bại!',
     }
   },
   // auth: 'guest',
@@ -147,6 +159,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions('authen', ['changePassword']),
     checkStatusClass,
     togglePassword() {
       this.isPasswordVisible = !this.isPasswordVisible
@@ -159,12 +172,30 @@ export default {
         confirmPasswordInput.type = this.isPasswordVisible ? 'text' : 'password'
       }
     },
-    submitForm() {
-      const invalid = this.$v.ruleForm.$invalid
-      if (invalid) {
-        this.$v.ruleForm.$touch()
+    async submitForm() {
+      if (this.$v.ruleForm) {
+        const invalid = this.$v.ruleForm.$invalid
+        if (invalid) {
+          this.$v.ruleForm.$touch()
+        } else {
+          try {
+            const payload = {
+              password: this.ruleForm.password,
+            }
+            await this.changePassword(payload)
+            this.showSuccessToast = true
+            setTimeout(() => {
+              this.showSuccessToast = false
+            }, 5000)
+          } catch (error) {
+            this.showErrorToast = true
+            setTimeout(() => {
+              this.showErrorToast = false
+            }, 3000)
+          }
+        }
       } else {
-        console.log('Dung')
+        console.error('$v.ruleForm is undefined')
       }
     },
   },

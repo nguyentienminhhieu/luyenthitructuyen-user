@@ -57,22 +57,36 @@
         </p>
       </div>
     </div>
+    <ToastSuccess v-if="showSuccessToast" :message="successMessage" />
+    <ToastError v-if="showErrorToast" :message="errorMessage" />
   </div>
 </template>
 <script>
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
 import { checkStatusClass } from '~/mixins/ruleValidator'
+import { mapState, mapActions } from 'vuex'
+import ToastSuccess from '~/components/common/ToastSuccess.vue'
+import ToastError from '~/components/common/ToastError.vue'
 export default {
   name: 'ForgotPasswordForm',
   mixins: [validationMixin],
   layout: 'authLayout',
   // auth: 'guest',
+  components: {
+    ToastSuccess,
+    ToastError,
+  },
   data() {
     return {
       ruleForm: {
         email: '',
       },
+      isPasswordVisible: false,
+      showSuccessToast: false,
+      showErrorToast: false,
+      successMessage: 'Gửi mail thành công, vào email xác thực!',
+      errorMessage: 'Gửi mail thất bại!',
     }
   },
   validations: {
@@ -84,13 +98,32 @@ export default {
     },
   },
   methods: {
+    ...mapActions('authen', ['forgotPassword']),
+
     checkStatusClass,
     submitForm() {
       const invalid = this.$v.ruleForm.$invalid
       if (invalid) {
         this.$v.ruleForm.$touch()
       } else {
-        console.log('Dung')
+        const payload = {
+          email: this.ruleForm.email,
+        }
+        this.forgotPassword(payload)
+          .then(() => {
+            this.showSuccessToast = true
+            setTimeout(() => {
+              this.showSuccessToast = false
+            }, 2000)
+          })
+          .catch((error) => {
+            // this.showErrorToast = true
+            // setTimeout(() => {
+            //   this.showErrorToast = false
+            // }, 3000)
+            alert(error)
+            console.error('Lỗi khi cập nhật:', error)
+          })
       }
     },
   },

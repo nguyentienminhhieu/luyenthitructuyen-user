@@ -102,15 +102,12 @@ export default {
     closeModal() {
       this.$emit('close')
     },
-    changeAvatar() {
-      this.$emit('close')
-    },
     submitForm() {
       const payload = {
         name: this.detailUser.name,
         address: this.detailUser.address,
         school: this.detailUser.school,
-        phone: this.detailUser.phone,
+        phone: '0969',
         avatar: this.selectedImage,
         grade_id: this.detailUser.grade_id,
       }
@@ -139,16 +136,16 @@ export default {
           const formData = new FormData()
           formData.append('image', file)
           await this.uploadFile(formData)
+          console.log(this.fileUpload)
 
-          if (this.fileUpload) {
+          // const match = /"url":\s*"([^"]+)"/.exec(this.fileUpload)
+          // if (match && match[1]) {
+          // const url = match[1]
+          // this.selectedImage = url.replaceAll('\\', '')
+          if (typeof this.fileUpload === 'object') {
             try {
-              const match = /"url":\s*"([^"]+)"/.exec(this.fileUpload)
-
-              if (match && match[1]) {
-                const url = match[1]
-                // eslint-disable-next-line vue/no-mutating-props
-                this.selectedImage = url.replaceAll('\\', '')
-                // eslint-disable-next-line vue/no-mutating-props
+              if (this.fileUpload && this.fileUpload.url) {
+                this.selectedImage = this.fileUpload.url
               } else {
                 console.log('Không tìm thấy giá trị URL.')
               }

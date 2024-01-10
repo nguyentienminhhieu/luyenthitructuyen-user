@@ -24,6 +24,7 @@
               {{ item.name }}
             </li>
           </ul> -->
+
           <h1
             @click="categoryOpenClass"
             class="text-border-default cursor-pointer"
@@ -48,16 +49,7 @@
       </div>
 
       <div class="relative" @click="closeModal">
-        <input
-          type="text"
-          placeholder="Search..."
-          class="search-input border-b-2 border-gray-300 rounded py-2 px-6 focus:outline-none text-sm w-[400px]"
-        />
-        <button
-          class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 text-color-custom hover:text-gray-600 focus:outline-none"
-        >
-          <i class="fas fa-search"></i>
-        </button>
+        <InputSearchLayout />
       </div>
       <div
         @click="openCreateExamEx"
@@ -81,14 +73,20 @@
           <i class="fas fa-bell"></i>
         </button> -->
 
-        <div class="text-border-default">
-          <div
-            class="relative cursor-pointer text-border-default hover:text-border-default"
-            @click="toggleAccountMenu"
-          >
-            <i class="fas fa-user-circle"></i>
+        <div class="avatar-user">
+          <div class="relative cursor-pointer" @click="toggleAccountMenu">
+            <i
+              v-if="user.avatar === null"
+              class="fas fa-user-circle text-border-default hover:text-border-default"
+            ></i>
+            <img
+              v-else
+              :src="user.avatar"
+              alt="avatar Image"
+              class="w-8 h-8 z-10 rounded-full opacity-1 hover:opacity-75"
+            />
           </div>
-          <div @click="closeModal">
+          <div class="text-border-default" @click="closeModal">
             <AccountMenu v-if="isMenuAccount" />
           </div>
         </div>
@@ -147,6 +145,7 @@ import MenuBars from '~/components/common/MenuBars/MenuBars.vue'
 import ModalAddExam from '~/components/common/ModalAdd'
 import ModalAddExercise from '~/components/ExerciseByTeacher/ModalAdd'
 import ScrollToTop from '~/components/common/ScrollToTop.vue'
+import InputSearchLayout from '~/components/common/searchData/inputSearchLayout/index.vue'
 
 export default {
   name: 'default',
@@ -160,6 +159,7 @@ export default {
     ModalAddExam,
     ModalAddExercise,
     ScrollToTop,
+    InputSearchLayout,
   },
   data() {
     return {
@@ -184,6 +184,7 @@ export default {
   methods: {
     ...mapActions('users', ['getInfoUser']),
     ...mapActions('grade', ['getGrade']),
+
     toggleAccountMenu() {
       this.isMenuAccount = !this.isMenuAccount
     },
@@ -234,7 +235,7 @@ header {
   }
 
   header .logo-color {
-    font-size: 24px;
+    font-size: 20px;
   }
 }
 
@@ -247,7 +248,7 @@ header {
   }
 
   header .logo-color {
-    font-size: 18px;
+    font-size: 16px;
   }
   .auth-text {
     font-size: 14px !important;
@@ -274,5 +275,10 @@ header {
   .menu-class ul li {
     margin: 0 8px;
   } */
+}
+@media (max-width: 600px) {
+  .avatar-user {
+    display: none;
+  }
 }
 </style>
