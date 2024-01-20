@@ -1,5 +1,5 @@
 <template>
-  <div v-if="detailExam">
+  <div v-if="slugExam">
     <div class="header-exam hidden sticky" style="top: 0">
       <HeaderExam
         :detail-exam="detailExam"
@@ -88,28 +88,25 @@ export default {
       showOutModal: false,
       showResultModal: false,
       showTimeOutModal: false,
-      // detailExam: null,
       selectedAnswers: {},
       submissionPayload: null,
       takeExams: null,
+      slugExam: '',
     }
   },
   computed: {
     ...mapState('exam', ['detailExam']),
-    ...mapGetters('exam', ['getDetailExam']),
   },
 
   mounted() {
     if (this.$route.query.slugExam) {
       this.slugExam = this.$route.query.slugExam
+      this.getExamBySlug(this.slugExam)
     }
-
-    this.getExamBySlug(this.slugExam)
-    this.setDetailExam(this.detailExam)
-    console.log(this.submissionPayload)
   },
+
   methods: {
-    ...mapActions('exam', ['getExamBySlug', 'setDetailExam']),
+    ...mapActions('exam', ['getExamBySlug']),
     handleAnswerSelected({ question, answer, isSelected }) {
       this.selectedAnswers[question.id] = { question, answer, isSelected }
     },

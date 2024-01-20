@@ -22,10 +22,6 @@
               class="mb-6"
             >
               <div class="flex flex-col">
-                <!-- <p class="text-base font-semibold mr-2">
-              Câu hỏi {{ question.index }}:
-            </p> -->
-                <!-- {{ question.index }} -->
                 <h3 class="text-base font-medium text-[#5d5d5d]">
                   <span v-html="question.content"></span>
                 </h3>
@@ -47,7 +43,7 @@
 
                     <label
                       :for="`toggle-${answer.id}`"
-                      class="block p-2 border w-full rounded-lg mb-2 cursor-pointer hover:bg-gray-100 transition-colors"
+                      class="block p-3 border w-full rounded-lg mb-2 cursor-pointer hover:bg-gray-100 transition-colors"
                       :class="{
                         'border-2 border-[#253d90] bg-[#5266b020]': isSelected(
                           question,
@@ -170,7 +166,6 @@ export default {
     } else {
       this.selectedAnswers = {}
     }
-    // EventBus.$on('go-to-question', this.handleGoToQuestion)
     const storedRemainingTime = localStorage.getItem('remainingTime')
     if (storedRemainingTime) {
       this.remainingTime = parseInt(storedRemainingTime)
@@ -186,9 +181,6 @@ export default {
     ...mapActions('exam', ['submitExam']),
     handleOut() {
       this.$emit('out-clicked')
-      // localStorage.removeItem('answersKey')
-      // localStorage.removeItem('remainingTime')
-      // this.$router.push('/')
     },
     sendPayload() {
       const payload = this.prepareSubmissionPayload()
@@ -197,9 +189,9 @@ export default {
 
     handleSend() {
       if (this.allQuestionsAnswered) {
-        const payload = this.prepareSubmissionPayload()
-        this.$emit('send-payload', payload)
-        this.$emit('send-clicked')
+      const payload = this.prepareSubmissionPayload()
+      this.$emit('send-payload', payload)
+      this.$emit('send-clicked')
       } else {
         this.showErrorToast = true
         setTimeout(() => {
@@ -231,11 +223,15 @@ export default {
       }
     },
     prepareQuestionsPayload(questions) {
-      return questions.map((question) => ({
-        id: question.id,
-        content: question.content,
-        answers: this.prepareAnswersPayload(question.answers, question),
-      }))
+      if (!questions) {
+        return []
+      } else {
+        return questions.map((question) => ({
+          id: question.id,
+          content: question.content,
+          answers: this.prepareAnswersPayload(question.answers, question),
+        }))
+      }
     },
     prepareAnswersPayload(answers, question) {
       return answers.map((answer) => ({
@@ -246,8 +242,7 @@ export default {
     },
     isSelected(question, answer) {
       const isSelected = this.selectedAnswers[question.id] === answer.id
-      // console.log('hieu123', isSelected)
-      this.$emit('answer-selected', { question, answer, isSelected })
+      this.$emit('answer-selected', { question, answer, isSelected }) // emit này chỉ dùng khi 2 component Introduction tách nhau
       this.saveAnswersToLocalStorage()
       return isSelected
     },
@@ -271,7 +266,6 @@ export default {
           localStorage.setItem('remainingTime', this.remainingTime.toString())
         } else {
           clearInterval(this.countdownInterval)
-          // this.$nuxt.$emit('time-is-up')
           this.$emit('timeout-clicked')
         }
       }, 1000)

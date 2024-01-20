@@ -22,6 +22,8 @@
               isSuccessDefined(question),
             'rounded-full w-8 h-8 m-1 border-2 border-[#e84c4c] bg-[#d9aaaaac] text-black items-center justify-center':
               !isSuccessDefined(question),
+            'rounded-full w-8 h-8 m-1  text-black items-center justify-center border-[2px] border-[#bababa] bg-gray-200':
+              isQuestionUnanswered(question),
           }"
         >
           {{ question.index }}
@@ -184,6 +186,9 @@ export default {
     },
     isCorrectQuestion(question) {
       return question.is_success == true
+    },
+    isQuestionUnanswered(question) {
+      return question.answers.every((answer) => !answer.checked)
     },
     sendFeedback() {
       const payload = {

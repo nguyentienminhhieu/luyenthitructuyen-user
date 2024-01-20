@@ -16,10 +16,9 @@
     </div>
     <div
       v-if="showNewMenu"
-      class="new-menu absolute top-30 left-[150px] w-[170px] max-h-[400px] bg-white border border-gray-300 mt-2 rounded shadow-md z-50 overflow-auto"
+      class="new-menu absolute top-30 left-[150px] w-[170px] max-h-[550px] bg-white border border-gray-300 mt-2 rounded shadow-md z-50 overflow-auto"
     >
       <ul class="grid grid-cols-2 gap-2 cursor-pointer">
-        <!-- Hiển thị nội dung menu mới -->
         <li
           @click="goToPageCategory(category)"
           v-for="category in listCategory"

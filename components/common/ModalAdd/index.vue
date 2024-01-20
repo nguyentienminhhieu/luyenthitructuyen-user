@@ -236,6 +236,7 @@ export default {
     checkStatusClass,
     closeModal() {
       this.$emit('close')
+      this.$v.$reset()
       this.reset()
     },
     async submitForm() {
@@ -255,10 +256,13 @@ export default {
           }
           // const response = await this.addExam(payload)
           if (this.addExamByTeacher(payload)) {
-            this.$router.push(`/users/${this.user.name}`)
-            await this.getListExamByTeacher()
+            this.showSuccessToast = true
+            setTimeout(() => {
+              this.showSuccessToast = false
+              this.$router.push(`/users/${this.user.name}`)
+              this.getListExamByTeacher()
+            }, 2000)
             this.closeModal()
-            // this.reset()
           } else {
             this.showErrorToast = true
             setTimeout(() => {

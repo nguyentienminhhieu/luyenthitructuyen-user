@@ -1,7 +1,7 @@
 <template>
   <div>
     <header
-      class="bg-[#273c75] py-4 px-14 h-16 flex justify-between items-center sticky top-0"
+      class="bg-[#273c75] py-4 px-14 h-16 flex justify-between items-center sticky top-0 z-50"
     >
       <div class="flex items-center space-x-4">
         <h1

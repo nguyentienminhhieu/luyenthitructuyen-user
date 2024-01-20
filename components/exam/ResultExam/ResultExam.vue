@@ -41,6 +41,11 @@
                 />
               </div>
             </div>
+            <div>
+              <p v-if="isQuestionUnanswered(question)" class="text-[#ff4a4a]">
+                Câu hỏi này chưa trả lời!
+              </p>
+            </div>
             <div class="mt-2">
               <ul>
                 <li v-for="answer in question.answers" :key="answer.id">
@@ -102,9 +107,9 @@ export default {
     isCorrect(answer) {
       return answer.checked == false && answer.is_correct === 1
     },
-    // isNotCorrect(answer) {
-    //    answer.is_correct === 0
-    // },
+    isQuestionUnanswered(question) {
+      return question.answers.every((answer) => !answer.checked)
+    },
     handleGoToQuestion(index) {
       const questionElement = document.getElementById(`question-${index}`)
       if (questionElement) {

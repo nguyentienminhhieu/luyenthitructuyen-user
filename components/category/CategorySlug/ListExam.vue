@@ -47,7 +47,7 @@
     <div v-if="totalPages > 1" class="flex items-center space-x-2 mt-8">
       <button
         class="bg-[#f4f4f5] text-[#7d7d7d] py-2 px-3 rounded-md"
-        :disabled="currentPageNumber === 1"
+        :class="currentPageNumber === 1 ? 'disabled' : ''"
         @click="goToPrevPage"
       >
         <i class="fa-solid fa-angle-left"></i>
@@ -68,7 +68,7 @@
       </ul>
       <button
         class="bg-[#f4f4f5] text-[#7d7d7d] py-2 px-3 rounded-md"
-        :disabled="currentPageNumber === totalPages"
+        :class="currentPageNumber === totalPages ? 'disabled' : ''"
         @click="goToNextPage"
       >
         <i class="fa-solid fa-angle-right"></i>

@@ -22,10 +22,7 @@
               class="mb-6"
             >
               <div class="flex flex-col">
-                <!-- <p class="text-base font-semibold mr-2">
-              Câu hỏi {{ question.index }}:
-            </p> -->
-                <!-- {{ question.index }} -->
+
                 <h3 class="text-base font-medium text-[#5d5d5d]">
                   <span v-html="question.content"></span>
                 </h3>
@@ -62,9 +59,6 @@
                         class="mr-2 cursor-pointer sr-only"
                       />
                       <span v-html="answer.content"></span>
-                      <!-- {{ answer.content }} -->
-                      <!-- {{ selectedAnswers }} -->
-                      <!-- {{ isSelected(question, answer) }} -->
                     </label>
                   </li>
                 </ul>
