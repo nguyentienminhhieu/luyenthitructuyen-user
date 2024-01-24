@@ -1,5 +1,20 @@
 <template>
   <div class="container-all grid grid-cols-1 gap-4 p-4 m-6 mx-24">
+    <div class="hidden relative my-2 w-[300px] shadow-xl rounded-md border-1">
+      <input
+        v-model="searchQuery"
+        placeholder="Search exercise..."
+        class="w-full first-letter:border-b-2 border-gray-300 rounded py-2 pl-4 pr-6 focus:outline-none"
+        @keyup.enter="performSearch"
+      />
+      <!-- @input="performSearch" -->
+      <button
+        class="absolute right-0 top-1/2 mx-2 transform -translate-y-1/2 text-gray-400 text-color-custom hover:text-gray-600 focus:outline-none"
+        @click="performSearch"
+      >
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
     <div
       v-for="(exercise, index) in listExercise"
       :key="index"
@@ -7,6 +22,12 @@
       @click="goToIntructions(exercise.slug)"
     >
       <div class="flex container-1">
+        <img
+          v-if="exercise.url_img === null"
+          src="~/assets/img/loi-hinh-anh.jpg"
+          alt="exercise Image"
+          class="img-exercise w-56 h-40 object-cover rounded-xl transform transition-transform hover:scale-105 cursor-pointer"
+        />
         <img
           v-if="exercise.url_img !== null"
           :src="exercise.url_img"
@@ -74,6 +95,9 @@ export default {
     return {
       exercises: [],
       currentPageNumber: this.currentPage,
+      searchQuery: '',
+      searchResults: [],
+      originalList: [],
     }
   },
   computed: {
@@ -87,16 +111,32 @@ export default {
     currentPageNumber(newPageNumber) {
       localStorage.setItem('currentPageNumberExercise', newPageNumber)
     },
+    searchQuery(newSearchQuery) {
+      if (!newSearchQuery) {
+        this.searchResults = [...this.originalList]
+      }
+    },
   },
   async mounted() {
     this.currentPageNumber =
       parseInt(localStorage.getItem('currentPageNumberExercise')) || 1
 
     await this.getListExercise()
+    this.originalList = [...this.listExercise]
+    this.searchResults = [...this.listExercise]
   },
 
   methods: {
     ...mapActions('exercise', ['getListExerciseCategory']),
+    async performSearch() {
+      const payload = {
+        title: this.searchQuery,
+        slug: this.slugCategory,
+        page: this.currentPageNumber,
+      }
+      await this.$store.dispatch('exercise/getListExerciseCategory', payload)
+      this.searchResults = this.listExercise
+    },
     goToIntructions(slugExercise) {
       this.$router.push({
         path: '/exercise/intructions',
@@ -108,7 +148,6 @@ export default {
     async getListExercise() {
       const payload = {
         slug: this.slugCategory,
-        limit: '6',
         page: this.currentPageNumber,
       }
       try {
@@ -122,7 +161,7 @@ export default {
         this.currentPageNumber++
         const payload = {
           slug: this.slugCategory,
-          limit: '6',
+          title: this.searchQuery,
           page: this.currentPageNumber,
         }
         await this.$store.dispatch('exercise/getListExerciseCategory', payload)
@@ -133,7 +172,7 @@ export default {
         this.currentPageNumber--
         const payload = {
           slug: this.slugCategory,
-          limit: '6',
+          title: this.searchQuery,
           page: this.currentPageNumber,
         }
         await this.$store.dispatch('exercise/getListExerciseCategory', payload)
@@ -143,7 +182,7 @@ export default {
       this.currentPageNumber = pageNumber
       const payload = {
         slug: this.slugCategory,
-        limit: '6',
+        title: this.searchQuery,
         page: this.currentPageNumber,
       }
       await this.$store.dispatch('exercise/getListExerciseCategory', payload)

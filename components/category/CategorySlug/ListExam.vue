@@ -1,19 +1,20 @@
 <template>
   <div class="container-all grid grid-cols-1 gap-4 p-4 m-6 mx-24">
-    <!-- @input="performSearch" -->
-    <!-- <div class="relative my-2 w-[300px] shadow-xl rounded-md border-1">
+    <div class="hidden relative my-2 w-[300px] shadow-xl rounded-md border-1">
       <input
         v-model="searchQuery"
-        placeholder="Search for a exam..."
+        placeholder="Search exam..."
         class="w-full first-letter:border-b-2 border-gray-300 rounded py-2 pl-4 pr-6 focus:outline-none"
+        @keyup.enter="performSearch"
       />
+      <!-- @input="performSearch" -->
       <button
         class="absolute right-0 top-1/2 mx-2 transform -translate-y-1/2 text-gray-400 text-color-custom hover:text-gray-600 focus:outline-none"
         @click="performSearch"
       >
         <i class="fas fa-search"></i>
       </button>
-    </div> -->
+    </div>
     <div
       v-for="(exam, index) in listExam"
       :key="index"
@@ -21,6 +22,12 @@
       @click="goToIntructions(exam)"
     >
       <div class="flex container-1">
+        <img
+          v-if="exam.url_img === null"
+          src="~/assets/img/loi-hinh-anh.jpg"
+          alt="exam Image"
+          class="img-exam w-56 h-40 object-cover rounded-xl transform transition-transform hover:scale-105 cursor-pointer"
+        />
         <img
           v-if="exam.url_img !== null"
           :src="exam.url_img"
@@ -88,44 +95,49 @@ export default {
     return {
       exams: [],
       currentPageNumber: this.currentPage,
-      // searchQuery: '',
-      // searchResults: [],
-      // originalList: [],
+      searchQuery: '',
+      searchResults: [],
+      originalList: [],
     }
   },
   computed: {
-    ...mapState('exam', ['listExam']),
-    ...mapState('exam', ['currentPage ']),
-    ...mapState('exam', ['totalPages']),
-    ...mapState('exam', ['itemsPerPage']),
-    ...mapState('exam', ['totalItems']),
+    ...mapState('exam', [
+      'listExam',
+      'currentPage',
+      'totalPages',
+      'itemsPerPage',
+      'totalItems',
+    ]),
   },
   watch: {
     currentPageNumber(newPageNumber) {
       localStorage.setItem('currentPageNumberExam', newPageNumber)
     },
-    // searchQuery(newSearchQuery) {
-    //   if (!newSearchQuery) {
-    //     this.searchResults = [...this.originalList]
-    //   }
-    // },
+    searchQuery(newSearchQuery) {
+      if (!newSearchQuery) {
+        this.searchResults = [...this.originalList]
+      }
+    },
   },
   async mounted() {
     this.currentPageNumber =
       parseInt(localStorage.getItem('currentPageNumberExam')) || 1
 
     await this.getListExam()
-    // this.originalList = [...this.listExam]
-    // this.searchResults = [...this.listExam]
+    this.originalList = [...this.listExam]
+    this.searchResults = [...this.listExam]
   },
   methods: {
     ...mapActions('exam', ['getListExamCategory']),
-    // async performSearch() {
-    //   await this.$store.dispatch('exam/getListExamCategory', {
-    //     title: this.searchQuery,
-    //   })
-    //   this.searchResults = this.listExam
-    // },
+    async performSearch() {
+      const payload = {
+        title: this.searchQuery,
+        slug: this.slugCategory,
+        page: this.currentPageNumber,
+      }
+      await this.$store.dispatch('exam/getListExamCategory', payload)
+      this.searchResults = this.listExam
+    },
     goToIntructions(exam) {
       this.$router.push({
         path: '/exam/intructions',
@@ -138,7 +150,6 @@ export default {
     async getListExam() {
       const payload = {
         slug: this.slugCategory,
-        limit: '6',
         page: this.currentPageNumber,
       }
       try {
@@ -152,8 +163,8 @@ export default {
         this.currentPageNumber++
         const payload = {
           slug: this.slugCategory,
-          limit: '6',
           page: this.currentPageNumber,
+          title: this.searchQuery,
         }
         await this.$store.dispatch('exam/getListExamCategory', payload)
       }
@@ -163,8 +174,8 @@ export default {
         this.currentPageNumber--
         const payload = {
           slug: this.slugCategory,
-          limit: '6',
           page: this.currentPageNumber,
+          title: this.searchQuery,
         }
         await this.$store.dispatch('exam/getListExamCategory', payload)
       }
@@ -173,8 +184,8 @@ export default {
       this.currentPageNumber = pageNumber
       const payload = {
         slug: this.slugCategory,
-        limit: '6',
         page: this.currentPageNumber,
+        title: this.searchQuery,
       }
       await this.$store.dispatch('exam/getListExamCategory', payload)
     },

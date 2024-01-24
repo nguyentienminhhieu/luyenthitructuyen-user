@@ -25,7 +25,7 @@ export const actions = {
         params: {
           title: payload.title,
           category_slug: payload.slug,
-          limit: payload.limit,
+          limit: '6',
           page: payload.page,
         },
       })
@@ -111,7 +111,7 @@ export const actions = {
         {
           params: {
             exam_id: examID,
-            limit: '20',
+            limit: '50',
           },
           ...config,
         }

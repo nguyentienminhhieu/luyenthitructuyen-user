@@ -183,7 +183,7 @@ export default {
       showSuccessToast: false,
       showErrorToast: false,
       successMessage: 'Thêm đề thi thành công!.',
-      errorMessage: 'Lỗi! Dữ liệu bị trùng.',
+      errorMessage: 'Lỗi! vui lòng thử lại.',
     }
   },
   validations: {
@@ -200,6 +200,7 @@ export default {
     ...mapState('grade', ['listGrade']),
     ...mapState('category', ['listCategory']),
     ...mapState('upload', ['fileUpload']),
+    ...mapState('users', ['user']),
   },
   mounted() {
     this.getGrade()
@@ -241,7 +242,9 @@ export default {
             this.showSuccessToast = true
             setTimeout(() => {
               this.showSuccessToast = false
+              this.$router.push(`/users/${this.user.name}`)
               this.getListExercise()
+              this.closeModal()
             }, 2000)
           } else {
             this.showErrorToast = true
@@ -293,6 +296,7 @@ export default {
       this.ruleForm.exerciseDescription = ''
       this.ruleForm.slug = ''
       this.ruleForm.category = null
+      this.$v.$reset()
     },
   },
 }

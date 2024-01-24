@@ -6,7 +6,7 @@
     >
     <p>//</p>
     <p class="text-color-custom hover:text-color-custom cursor-pointer">
-      {{ nameCategory }} - Exercise
+      {{ nameCategory }} - Bài tập
     </p>
   </div>
 </template>

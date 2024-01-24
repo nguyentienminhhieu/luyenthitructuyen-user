@@ -17,8 +17,9 @@ export const actions = {
       // const config = getAuthorizationConfig()
       const response = await this.$axios.get('/list-exercises', {
         params: {
+          title: payload.title,
           category_slug: payload.slug,
-          limit: payload.limit,
+          limit: '6',
           page: payload.page,
         },
       })

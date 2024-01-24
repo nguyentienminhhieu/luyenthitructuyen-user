@@ -227,7 +227,7 @@ export default {
       showSuccessToast: false,
       showErrorToast: false,
       successMessage: 'Sửa người dùng thành công!.',
-      errorMessage: 'Lỗi! Dữ liệu bị trùng.',
+      errorMessage: 'Lỗi! Vui long thu lai.',
     }
   },
   computed: {

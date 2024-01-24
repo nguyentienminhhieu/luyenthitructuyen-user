@@ -70,14 +70,13 @@ export default {
             'exerciseByTeacher/deleteExercise',
             this.exerciseId
           )
+        } else if (this.idComment) {
+          this.$store.dispatch('commentExam/deleteComment', this.idComment)
         }
-        // else if (this.idComment) {
-        //   this.$store.dispatch('commentExam/deleteComment', this.idComment)
-        // }
-        this.closeModal()
         this.showSuccessToast = true
         setTimeout(() => {
           this.showSuccessToast = false
+          this.closeModal()
         }, 3000)
       } catch (error) {
         this.showErrorToast = true

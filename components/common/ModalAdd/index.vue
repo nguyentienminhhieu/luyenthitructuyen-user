@@ -205,7 +205,7 @@ export default {
       showSuccessToast: false,
       showErrorToast: false,
       successMessage: 'Thêm đề thi thành công!.',
-      errorMessage: 'Lỗi! Dữ liệu bị trùng.',
+      errorMessage: 'Lỗi! Vui lòng thử lại.',
     }
   },
   validations: {
@@ -261,8 +261,8 @@ export default {
               this.showSuccessToast = false
               this.$router.push(`/users/${this.user.name}`)
               this.getListExamByTeacher()
+              this.closeModal()
             }, 2000)
-            this.closeModal()
           } else {
             this.showErrorToast = true
             setTimeout(() => {
@@ -315,6 +315,7 @@ export default {
       this.ruleForm.category = null
       this.ruleForm.examTime = null
       this.ruleForm.examScore = null
+      this.$v.$reset()
     },
   },
 }

@@ -1,14 +1,24 @@
 <template>
   <div class="table-1 w-[100%] my-5 mx-auto overflow-x-auto">
     <table
-      class="w-[100%] max-h-[600px] border-collapse border border-gray-300 rounded-lg"
+      class="max-h-[600px] border-collapse border border-gray-300 rounded-lg"
     >
       <thead>
         <tr class="bg-[#3c445c] text-white">
           <th
-            class="pl-3 py-3 text-left text-xs font-medium uppercase tracking-wider border-r-2"
+            class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider border-r-2"
           >
             Tên người thi
+          </th>
+          <th
+            class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider border-r-2"
+          >
+            Lớp
+          </th>
+          <th
+            class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider border-r-2"
+          >
+            Địa chỉ
           </th>
           <th
             class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider border-r-2"
@@ -43,8 +53,14 @@
           class="cursor-pointer hover:bg-gray-300"
           :class="{ 'bg-gray-100': index % 2 === 0 }"
         >
-          <td class="pl-3 py-4 whitespace-nowrap border-r-2">
+          <td class="px-3 py-4 whitespace-nowrap border-r-2">
             {{ exam.user?.name }}
+          </td>
+          <td class="px-3 py-4 whitespace-nowrap border-r-2">
+            {{ getGradeName(exam.user?.grade_id) }}
+          </td>
+          <td class="px-3 py-4 whitespace-nowrap border-r-2">
+            {{ exam.user?.address }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap border-r-2">
             {{ exam.total_score }} / {{ exam.exam?.max_score }}
@@ -71,8 +87,10 @@
         </div>
       </tbody>
     </table>
-    <!-- <template v-else> </template> -->
-    <div v-if="totalPages > 1" class="flex items-center space-x-2 mt-8">
+
+    <!-- <div
+      class="flex items-center space-x-2 mt-8"
+    >
       <button
         class="bg-[#f4f4f5] text-[#7d7d7d] py-2 px-3 rounded-md"
         :disabled="currentPageNumber === 1"
@@ -101,7 +119,7 @@
       >
         <i class="fa-solid fa-angle-right"></i>
       </button>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
@@ -171,33 +189,42 @@ export default {
         return text
       }
     },
-    async goToNextPage() {
-      if (this.currentPageNumber < this.totalPages) {
-        this.currentPageNumber++
-        const payload = {
-          limit: '6',
-          page: this.currentPageNumber,
-        }
-        await this.$store.dispatch('exam/getExamByDoneUser', payload)
+    // async goToNextPage() {
+    //   if (this.currentPageNumber < this.totalPages) {
+    //     this.currentPageNumber++
+    //     const payload = {
+    //       limit: '10',
+    //       page: this.currentPageNumber,
+    //     }
+    //     await this.$store.dispatch('exam/getExamByDoneUser', payload)
+    //   }
+    // },
+    // async goToPrevPage() {
+    //   if (this.currentPageNumber > 1) {
+    //     this.currentPageNumber--
+    //     const payload = {
+    //       limit: '10',
+    //       page: this.currentPageNumber,
+    //     }
+    //     await this.$store.dispatch('exam/getExamByDoneUser', payload)
+    //   }
+    // },
+    // async goToPage(pageNumber) {
+    //   this.currentPageNumber = pageNumber
+    //   const payload = {
+    //     limit: '10',
+    //     page: this.currentPageNumber,
+    //   }
+    //   await this.$store.dispatch('exam/getExamByDoneUser', payload)
+    // },
+    getGradeName(gradeId) {
+      const gradeMapping = {
+        1: 'Lớp 6',
+        2: 'Lớp 7',
+        3: 'Lớp 8',
+        4: 'Lớp 9',
       }
-    },
-    async goToPrevPage() {
-      if (this.currentPageNumber > 1) {
-        this.currentPageNumber--
-        const payload = {
-          limit: '6',
-          page: this.currentPageNumber,
-        }
-        await this.$store.dispatch('exam/getExamByDoneUser', payload)
-      }
-    },
-    async goToPage(pageNumber) {
-      this.currentPageNumber = pageNumber
-      const payload = {
-        limit: '6',
-        page: this.currentPageNumber,
-      }
-      await this.$store.dispatch('exam/getExamByDoneUser', payload)
+      return gradeId ? gradeMapping[gradeId] : ''
     },
   },
 }
@@ -214,7 +241,7 @@ export default {
     /* overflow-x: none; */
   }
   .table-1 table {
-    width: 90%;
+    width: 100%;
   }
 }
 </style>

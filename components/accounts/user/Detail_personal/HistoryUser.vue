@@ -10,7 +10,7 @@
     </div>
     <div
       v-if="user.role === 1"
-      class="table-hs w-[50%] items-center mx-auto my-20 overflow-x-auto max-h-[600px]"
+      class="table-hs w-[60%] items-center mx-auto my-20 overflow-x-auto max-h-[700px]"
     >
       <div class="relative my-2">
         <label
@@ -103,6 +103,7 @@
           </div>
         </tbody>
       </table>
+
       <div v-if="totalPages != 1" class="flex items-center space-x-2 mt-8">
         <button
           class="bg-[#f4f4f5] text-[#7d7d7d] py-2 px-3 rounded-md"
@@ -500,6 +501,7 @@ export default {
         await this.$store.dispatch('exam/getListHistoryExamByUser', {
           userID: this.userInfo,
           page: this.currentPageNumber,
+          subject_id: this.selectedOptionSubject,
         })
       }
     },
@@ -509,6 +511,7 @@ export default {
         await this.$store.dispatch('exam/getListHistoryExamByUser', {
           userID: this.userInfo,
           page: this.currentPageNumber,
+          subject_id: this.selectedOptionSubject,
         })
       }
     },
@@ -517,11 +520,13 @@ export default {
       await this.$store.dispatch('exam/getListHistoryExamByUser', {
         userID: this.userInfo,
         page: this.currentPageNumber,
+        subject_id: this.selectedOptionSubject,
       })
     },
     async handleOptionSubject() {
       await this.$store.dispatch('exam/getListHistoryExamByUser', {
         subject_id: this.selectedOptionSubject,
+        page: this.currentPageNumber,
       })
     },
   },

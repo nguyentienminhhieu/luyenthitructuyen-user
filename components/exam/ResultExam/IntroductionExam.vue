@@ -234,14 +234,14 @@ export default {
         })
     },
     async xoaComment(id) {
-      // this.idComment = id
-      // this.showDeleteModal = true
-      await this.deleteComment(id)
-      this.showSuccessToastDelete = true
-      setTimeout(() => {
-        this.showSuccessToastDelete = false
-        this.$router.go(0)
-      }, 3000)
+      this.idComment = id
+      this.showDeleteModal = true
+      // await this.deleteComment(id)
+      // this.showSuccessToastDelete = true
+      // setTimeout(() => {
+      //   this.showSuccessToastDelete = false
+      //   this.$router.go(0)
+      // }, 3000)
     },
   },
 }

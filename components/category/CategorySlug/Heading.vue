@@ -6,7 +6,7 @@
     >
     <p>//</p>
     <p class="text-color-custom hover:text-color-custom cursor-pointer">
-      {{ nameCategory }} - Exam
+      {{ nameCategory }} - Đề thi
     </p>
   </div>
 </template>

@@ -4,12 +4,12 @@
       class="bg-[#273c75] py-4 px-14 h-16 flex justify-between items-center sticky top-0"
     >
       <div class="flex items-center space-x-4">
-        <nuxt-link
-          to="/"
+        <h1
           @click="reloadHomePage"
-          class="logo-color text-2xl font-bold"
-          >LuyenThiTracNghiem</nuxt-link
+          class="logo-color text-2xl font-bold cursor-pointer"
         >
+          LuyenThiTracNghiem
+        </h1>
       </div>
       <div class="menu flex">
         <div class="menu-class relative m-4">
@@ -36,7 +36,6 @@
           <CategoryExamMenu v-if="showDropdownClass" />
         </div>
         <div class="menu-class relative m-4">
-          <!-- Dropdown -->
           <h1
             @click="categoryOpenSubject"
             class="text-border-default cursor-pointer"
@@ -215,8 +214,11 @@ export default {
       this.showMenu = false
     },
     reloadHomePage() {
-      // Sử dụng $router.go để reload trang "/"
-      this.$router.go(0)
+      // this.$router.go(0)
+
+      localStorage.removeItem('currentPageNumberExam')
+      localStorage.removeItem('currentPageNumberExercise')
+      this.$router.push('/')
     },
     // goToCategory(nameGrade) {
     //   this.$router.push('/category-exams')

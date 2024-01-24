@@ -51,15 +51,21 @@
         </button>
       </div>
     </div>
+    <ToastSuccess v-if="showSuccessToast" :message="successMessage" />
+    <ToastError v-if="showErrorToast" :message="errorMessage" />
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex'
-
+import ToastSuccess from '~/components/common/ToastSuccess.vue'
+import ToastError from '~/components/common/ToastError.vue'
 export default {
   name: 'ModalUploadAvatar',
-
+  components: {
+    ToastSuccess,
+    ToastError,
+  },
   props: {
     showModal: Boolean,
     detailUser: Object,
@@ -67,6 +73,10 @@ export default {
   data() {
     return {
       selectedImage: null,
+      showSuccessToast: false,
+      showErrorToast: false,
+      successMessage: 'Sửa avatar thành công!.',
+      errorMessage: 'Lỗi! Vui long thu lai',
     }
   },
   computed: {
@@ -117,13 +127,13 @@ export default {
           setTimeout(() => {
             this.showSuccessToast = false
             this.getInfoUser()
-          }, 2000)
+          }, 3000)
         })
         .catch(() => {
           this.showErrorToast = true
           setTimeout(() => {
             this.showErrorToast = false
-          }, 2000)
+          }, 3000)
         })
     },
     handleFileChange(event) {

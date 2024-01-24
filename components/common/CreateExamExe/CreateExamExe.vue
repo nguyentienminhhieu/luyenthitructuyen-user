@@ -13,7 +13,7 @@
       <li
         v-if="listExamByTeacher.length >= 10"
         @click="overLengthExam"
-        class="p-4 rounded text-[#5d5d5d] font-bold hover:bg-gray-300 overflow-hidden whitespace-wrap text-ellipsis transition duration-300 ease-in-out"
+        class="p-4 rAounded text-[#5d5d5d] font-bold hover:bg-gray-300 overflow-hidden whitespace-wrap text-ellipsis transition duration-300 ease-in-out"
       >
         Tạo Đề thi
       </li>
@@ -64,6 +64,8 @@ export default {
   },
   mounted() {
     this.getListExamByTeacher(), this.getListExercise()
+    console.log(this.listExamByTeacher)
+    console.log(this.listExercise)
   },
   methods: {
     ...mapActions('exam', ['getListExamByTeacher']),
@@ -75,16 +77,18 @@ export default {
       this.$emit('open-add-exercise')
     },
     overLengthExam() {
-      this.showErrorToast = true
-      setTimeout(() => {
-        this.showErrorToast = false
-      }, 3000)
+      // this.showErrorToast = true
+      //   setTimeout(() => {
+      //     this.showErrorToast = false
+      //   }, 3000)
+      alert('Bạn đã tạo quá số lượng đề thi')
     },
     overLengthExercise() {
-      this.showErrorToast = true
-      setTimeout(() => {
-        this.showErrorToast = false
-      }, 3000)
+      // this.showErrorToast = true
+      // setTimeout(() => {
+      //   this.showErrorToast = false
+      // }, 3000)
+      alert('Bạn đã tạo quá số lượng bài ập')
     },
   },
 }

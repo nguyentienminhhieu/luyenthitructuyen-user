@@ -46,6 +46,8 @@ export default {
     handleOut() {
       localStorage.removeItem('answersKey')
       localStorage.removeItem('remainingTime')
+      localStorage.removeItem('currentPageNumberExam')
+      localStorage.removeItem('currentPageNumberExercise')
       this.$router.push('/')
     },
     handleContinue() {

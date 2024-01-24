@@ -53,7 +53,8 @@ export default {
       this.showSuccessToast = true
       setTimeout(() => {
         this.showSuccessToast = false
-      }, 5000)
+        this.$router.push('/login')
+      }, 3000)
       // } catch {
       //   this.showErrorToast = true
       //   setTimeout(() => {

@@ -100,11 +100,7 @@
             >
               <span :style="{ width: '90%' }">
                 {{
-                  !$v.ruleForm.address.required
-                    ? 'Vui lòng nhập dữ liệu!'
-                    : !$v.ruleForm.address.mustNotSymbol
-                    ? 'Vui lòng nhập đúng định dạng!'
-                    : ''
+                  !$v.ruleForm.address.required ? 'Vui lòng nhập dữ liệu!' : ''
                 }}
               </span>
             </div>
@@ -241,12 +237,6 @@
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label for="roles" class="block text-color-default">Vai trò</label>
-            <!-- <input
-              type="text"
-              id="roles"
-              name="roles"
-              class="w-full border-b-2 focus:outline-none p-1"
-            /> -->
             <select
               id=""
               v-model="ruleForm.roles"
@@ -342,7 +332,6 @@ import {
 } from 'vuelidate/lib/validators'
 import {
   checkStatusClass,
-  mustNotSymbol,
   mustOnlyNumberAndSymbol,
   passwordRegex,
 } from '~/mixins/ruleValidator'
@@ -403,7 +392,6 @@ export default {
       },
       address: {
         required,
-        mustNotSymbol,
       },
     },
   },
@@ -445,17 +433,10 @@ export default {
           }
           this.reset()
           await this.register(payload)
-          if (!error) {
-            this.showSuccessToast = true
-            setTimeout(() => {
-              this.showSuccessToast = false
-            }, 5000)
-          } else {
-            this.showErrorToast = true
-            setTimeout(() => {
-              this.showErrorToast = false
-            }, 3000)
-          }
+          this.showSuccessToast = true
+          setTimeout(() => {
+            this.showSuccessToast = false
+          }, 5000)
         } catch (error) {
           this.showErrorToast = true
           setTimeout(() => {
